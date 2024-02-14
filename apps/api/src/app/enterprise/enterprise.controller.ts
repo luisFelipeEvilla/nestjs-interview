@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { EnterpriseService } from './enterprise.service';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
@@ -32,14 +33,14 @@ export class EnterpriseController {
 
   @ApiOkResponse({ type: Enterprise, description: 'Enterprise details' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: ParseIntPipe) {
     return this.enterpriseService.findOne(+id);
   }
 
   @ApiOkResponse({ type: Enterprise, description: 'Enterprise updated' })
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: ParseIntPipe,
     @Body() updateEnterpriseDto: UpdateEnterpriseDto,
   ) {
     return this.enterpriseService.update(+id, updateEnterpriseDto);
@@ -47,7 +48,7 @@ export class EnterpriseController {
 
   @ApiOkResponse({ type: Enterprise, description: 'Enterprise deleted' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: ParseIntPipe) {
     return this.enterpriseService.remove(+id);
   }
 }

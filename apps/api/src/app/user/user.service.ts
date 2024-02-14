@@ -12,7 +12,7 @@ export class UserService {
       where: { id: createUserDto.enterprise_id },
     });
 
-    if (!enterprise) return NotFoundException;
+    if (!enterprise) return new NotFoundException(`Enterprise with id ${createUserDto.enterprise_id} not found`);
 
 
     //todo: encrypt passsword
