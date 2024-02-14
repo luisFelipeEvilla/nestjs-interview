@@ -35,7 +35,7 @@ model user {
   password    String
   enterprise  enterprise @relation(fields: [enterpriseId], references: [id])
   enterpriseId Int
-  role        role
+  role        role    @default(USER)
 }
 
 model employee {
