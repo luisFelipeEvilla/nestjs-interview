@@ -12,10 +12,10 @@ import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     // PrismaModule,
+    AuthModule,
     UserModule,
     EnterpriseModule,
-    EmployeeModule,
-    AuthModule
+    EmployeeModule
   ],
   controllers: [AppController],
   providers: [
