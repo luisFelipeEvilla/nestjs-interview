@@ -5,11 +5,13 @@ import { AppService } from './app.service';
 // import { HelloCommand } from '@ocmi/api/commands/hello.command';
 // import { PrismaModule } from 'nestjs-prisma';
 import { UserModule } from './user/user.module';
+import { EnterpriseModule } from './enterprise/enterprise.module';
 
 @Module({
   imports: [
     // PrismaModule,
     UserModule,
+    EnterpriseModule,
   ],
   controllers: [AppController],
   providers: [
