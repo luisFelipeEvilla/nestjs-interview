@@ -10,18 +10,21 @@ import {
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Employee } from './entities/employee.entity';
 
 @Controller('employee')
+@ApiTags('employee')
 export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
+  @ApiOkResponse({ type: Employee,  description: 'Employee created successfully' })
   @Post()
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeeService.create(createEmployeeDto);
   }
 
+  @ApiOkResponse({ type: Employee, isArray: true, description: 'List of all employees' })
   @Get()
   @ApiOkResponse({ type: Employee, isArray: true, description: 'List of all employees' })
   findAll() {
