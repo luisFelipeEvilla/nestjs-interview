@@ -17,7 +17,7 @@ export class CreateUserDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(6)
-    readonly password: string;
+    password: string;
     
     @ApiProperty({ enum: role, enumName: 'role'})
     @IsNotEmpty()

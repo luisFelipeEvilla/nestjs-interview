@@ -2,7 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
+import * as bcrypt from 'bcrypt';
 
+const roundsOfHash = 10;
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
@@ -15,11 +17,14 @@ export class UserService {
     if (!enterprise) return new NotFoundException(`Enterprise with id ${createUserDto.enterprise_id} not found`);
 
     //todo: encrypt passsword
+
+    const hashedPassword = await bcrypt.hash(createUserDto.password, roundsOfHash);
+
     const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
         name: createUserDto.name,
-        password: createUserDto.password,
+        password: hashedPassword,
         role: createUserDto.role,
         enterprise: {
           connect: {
@@ -49,6 +54,10 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, roundsOfHash);
+    }
+
     const user = await this.prisma.user.update({
       where: { id },
       data: updateUserDto,
