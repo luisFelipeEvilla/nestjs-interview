@@ -11,7 +11,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
 
 @Controller('user')
@@ -33,18 +33,21 @@ export class UserController {
 
   @Get(':id')
   @ApiOkResponse({ type: User, description: 'User found successfully' })
+  @ApiParam({ name: 'id', type: Number })
   findOne(@Param('id') id: ParseIntPipe) {
     return this.userService.findOne(+id);
   }
 
   @Patch(':id')
   @ApiOkResponse({ type: User, description: 'User updated successfully' })
+  @ApiParam({ name: 'id', type: Number })
   update(@Param('id') id: ParseIntPipe, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: User, description: 'User removed successfully' })
+  @ApiParam({ name: 'id', type: Number })
   remove(@Param('id') id: ParseIntPipe) {
     return this.userService.remove(+id);
   }

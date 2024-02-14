@@ -14,7 +14,6 @@ export class UserService {
 
     if (!enterprise) return new NotFoundException(`Enterprise with id ${createUserDto.enterprise_id} not found`);
 
-
     //todo: encrypt passsword
     const user = await this.prisma.user.create({
       data: {

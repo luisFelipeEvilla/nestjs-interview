@@ -12,7 +12,7 @@ import {
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Employee } from './entities/employee.entity';
 import { NotFoundError } from 'rxjs';
 
@@ -35,6 +35,7 @@ export class EmployeeController {
   }
 
   @ApiOkResponse({ type: Employee, description: 'Employee details' })
+  @ApiParam({ name: 'id', type: Number })
   @Get(':id')
   async findOne(@Param('id') id: ParseIntPipe) {
     const employee = await this.employeeService.findOne(+id);
@@ -45,6 +46,7 @@ export class EmployeeController {
   }
 
   @ApiOkResponse({ type: Employee, description: 'Employee updated' })
+  @ApiParam({ name: 'id', type: Number })
   @Patch(':id')
   update(
     @Param('id') id: ParseIntPipe,
@@ -54,6 +56,7 @@ export class EmployeeController {
   }
 
   @ApiOkResponse({ type: Employee, description: 'Employee deleted' })
+  @ApiParam({ name: 'id', type: Number })
   @Delete(':id')
   async remove(@Param('id') id: ParseIntPipe) {
     const removed = await this.employeeService.remove(+id);

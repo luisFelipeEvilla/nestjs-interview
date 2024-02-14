@@ -11,7 +11,7 @@ import {
 import { EnterpriseService } from './enterprise.service';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
 import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Enterprise } from './entities/enterprise.entity';
 
 @Controller('enterprise')
@@ -31,14 +31,16 @@ export class EnterpriseController {
     return this.enterpriseService.findAll();
   }
 
-  @ApiOkResponse({ type: Enterprise, description: 'Enterprise details' })
   @Get(':id')
+  @ApiOkResponse({ type: Enterprise, description: 'Enterprise details' })
+  @ApiParam({ name: 'id', type: Number })
   findOne(@Param('id') id: ParseIntPipe) {
     return this.enterpriseService.findOne(+id);
   }
 
-  @ApiOkResponse({ type: Enterprise, description: 'Enterprise updated' })
   @Patch(':id')
+  @ApiOkResponse({ type: Enterprise, description: 'Enterprise updated' })
+  @ApiParam({ name: 'id', type: Number })
   update(
     @Param('id') id: ParseIntPipe,
     @Body() updateEnterpriseDto: UpdateEnterpriseDto,
@@ -47,6 +49,7 @@ export class EnterpriseController {
   }
 
   @ApiOkResponse({ type: Enterprise, description: 'Enterprise deleted' })
+  @ApiParam({ name: 'id', type: Number })
   @Delete(':id')
   remove(@Param('id') id: ParseIntPipe) {
     return this.enterpriseService.remove(+id);
