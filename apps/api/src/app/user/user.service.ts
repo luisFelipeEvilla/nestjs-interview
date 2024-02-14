@@ -14,6 +14,8 @@ export class UserService {
 
     if (!enterprise) return NotFoundException;
 
+
+    //todo: encrypt passsword
     const user = await this.prisma.user.create({
       data: {
         email: createUserDto.email,
@@ -42,16 +44,25 @@ export class UserService {
       where: { id },
     });
 
-    if (!user) return NotFoundException;
+    if (!user) return new NotFoundException('User not found');
 
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: updateUserDto,
+    });
+
+    return user;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.prisma.user.delete({
+      where: { id },
+    });
+
+    return user;
   }
 }
