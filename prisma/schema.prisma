@@ -44,7 +44,6 @@ model employee {
   email       String
   enterprise  enterprise @relation(fields: [enterpriseId], references: [id])
   enterpriseId Int
-  role        role
   payment_type payment_type
 }
 

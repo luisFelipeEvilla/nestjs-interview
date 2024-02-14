@@ -6,12 +6,14 @@ import { AppService } from './app.service';
 // import { PrismaModule } from 'nestjs-prisma';
 import { UserModule } from './user/user.module';
 import { EnterpriseModule } from './enterprise/enterprise.module';
+import { EmployeeModule } from './employee/employee.module';
 
 @Module({
   imports: [
     // PrismaModule,
     UserModule,
     EnterpriseModule,
+    EmployeeModule,
   ],
   controllers: [AppController],
   providers: [
