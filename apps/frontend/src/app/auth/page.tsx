@@ -30,6 +30,11 @@ export default function Singin() {
         expires: new Date(Date.now() + 60 * 60 * 24 * 7),
       });
 
+      cookie.set('user', JSON.stringify(response.data.user), {
+        path: '/',
+        expires: new Date(Date.now() + 60 * 60 * 24 * 7),
+      });
+
       window.location.href = '/';
       
       // const cookieData = {
