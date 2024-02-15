@@ -3,11 +3,13 @@ import { Button, Input } from '@nextui-org/react';
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useCookies } from 'next-client-cookies';
 
 export default function Singin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
+  const cookie = useCookies();
 
   useEffect(() => {
     setError(false);
@@ -17,13 +19,37 @@ export default function Singin() {
 
     try {
       //todo: fetch api url from .env
-      const request = await axios.post(`/api/auth/signin`, {
+      const response = await axios.post(`/api/auth/signin`, {
         email,
         password,
       });
 
-      document.cookie = `token=${request.data.token}`;
+
+      cookie.set('token', response.data.accessToken, {
+        path: '/',
+        expires: new Date(Date.now() + 60 * 60 * 24 * 7),
+      });
+
       window.location.href = '/';
+      
+      // const cookieData = {
+      //   key: 'token',
+      //   value: response.data.accessToken,
+      //   options: {
+      //     path: '/',
+      //     maxAge: 60 * 60 * 24 * 7, // 1 week
+      //     httpOnly: true,
+      //   },
+      // };
+
+      // const cookie = serialize(
+      //   cookieData.key,
+      //   cookieData.value,
+      //   cookieData.options,
+      // );
+
+      // document.cookie = cookie;
+      //   window.location.href = '/';
     } catch (error: any) {
       console.log('hola');
       console.error(error.response.status);
