@@ -53,7 +53,7 @@ export default function PaymentSheetDetail({ params }: any) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }); 
+      });
 
       response.data.check_date = new Date(response.data.check_date);
 
@@ -114,12 +114,15 @@ export default function PaymentSheetDetail({ params }: any) {
           type="date"
           value={paymentSheet.check_date.toISOString().split('T')[0]}
           onChange={(e) =>
-            setPaymentSheet({ ...paymentSheet, check_date: new Date(e.target.value) })
+            setPaymentSheet({
+              ...paymentSheet,
+              check_date: new Date(e.target.value),
+            })
           }
           required
         />
       </div>
-      <Table>
+      <Table isStriped>
         <TableHeader>
           <TableColumn>Employee Name</TableColumn>
           <TableColumn>Payment Type</TableColumn>
@@ -129,30 +132,44 @@ export default function PaymentSheetDetail({ params }: any) {
         </TableHeader>
 
         <TableBody>
-          {paymentSheet.employee_payment.map((employee_payment) => (
-            <TableRow key={employee_payment.id}>
-              <TableCell>{employee_payment.employee.name}</TableCell>
-              <TableCell>{employee_payment.payment_type}</TableCell>
-              <TableCell>{employee_payment.payment_rate} USD</TableCell>
+            {paymentSheet.employee_payment.map((employee_payment) => (
+              <TableRow key={employee_payment.id}>
+                <TableCell>{employee_payment.employee.name}</TableCell>
+                <TableCell>{employee_payment.payment_type}</TableCell>
+                <TableCell>{employee_payment.payment_rate} USD</TableCell>
+                <TableCell>
+                  {employee_payment.payment_type === 'HOURLY' ? (
+                    <Input
+                      size="sm"
+                      type="number"
+                      defaultValue={'0'}
+                      value={employee_payment.units.toString()}
+                      onChange={(e) => handleUnitChange(e, employee_payment.id)}
+                      min={0}
+                    />
+                  ) : (
+                    1
+                  )}
+                </TableCell>
+                <TableCell>
+                  {employee_payment.payment_rate * employee_payment.units} USD
+                </TableCell>
+              </TableRow>
+            ))}
+
+            {/* <TableRow>
+              <TableCell colSpan={3} ><p></p></TableCell>
+              <TableCell>Total</TableCell>
               <TableCell>
-                {employee_payment.payment_type === 'HOURLY' ? (
-                  <Input
-                    size="sm"
-                    type="number"
-                    defaultValue={'0'}
-                    value={employee_payment.units.toString()}
-                    onChange={(e) => handleUnitChange(e, employee_payment.id)}
-                    min={0}
-                  />
-                ) : (
-                  1
+                {paymentSheet.employee_payment.reduce(
+                  (acc, employee_payment) =>
+                    acc +
+                    employee_payment.payment_rate * employee_payment.units,
+                  0,
                 )}
+                USD
               </TableCell>
-              <TableCell>
-                {employee_payment.payment_rate * employee_payment.units} USD
-              </TableCell>
-            </TableRow>
-          ))}
+            </TableRow> */}
         </TableBody>
       </Table>
 
