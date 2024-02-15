@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
 type PaymentSheet = {
   id: number;
   created_at: string;
-  check_date: string;
+  check_date: Date;
   employee_payment: employee_payment[];
   enterprise_id: number;
 };
@@ -37,7 +37,7 @@ export default function PaymentSheetDetail({ params }: any) {
     id: 0,
     created_at: '',
     employee_payment: [],
-    check_date: '',
+    check_date: new Date(),
     enterprise_id: 0,
   });
   const cookies = useCookies();
@@ -53,7 +53,9 @@ export default function PaymentSheetDetail({ params }: any) {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
+      }); 
+
+      response.data.check_date = new Date(response.data.check_date);
 
       setPaymentSheet(response.data);
     } catch (error) {
@@ -80,7 +82,7 @@ export default function PaymentSheetDetail({ params }: any) {
     setPaymentSheet({
       ...paymentSheet,
       // @ts-ignore
-      check_date: new Date(paymentSheet.check_date),
+      check_date: paymentSheet.check_date,
       employee_payment: newEmployeesPayment,
     });
   };
@@ -110,9 +112,9 @@ export default function PaymentSheetDetail({ params }: any) {
           label="Check Date"
           placeholder="Select a Check Date of the payroll"
           type="date"
-          value={paymentSheet.check_date}
+          value={paymentSheet.check_date.toISOString().split('T')[0]}
           onChange={(e) =>
-            setPaymentSheet({ ...paymentSheet, check_date: e.target.value })
+            setPaymentSheet({ ...paymentSheet, check_date: new Date(e.target.value) })
           }
           required
         />
