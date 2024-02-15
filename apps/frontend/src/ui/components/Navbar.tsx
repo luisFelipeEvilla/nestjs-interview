@@ -20,6 +20,10 @@ export default function AdminNavbar() {
         <NavbarItem>
           <Link href="/employee">Employee</Link>
         </NavbarItem>
+
+        <NavbarItem>
+          <Link href="/payments-sheet">Payments Sheet</Link>
+        </NavbarItem>
       </NavbarContent>
     </Navbar>
   );

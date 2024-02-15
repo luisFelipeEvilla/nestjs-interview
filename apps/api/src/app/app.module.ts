@@ -8,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { EnterpriseModule } from './enterprise/enterprise.module';
 import { EmployeeModule } from './employee/employee.module';
 import { AuthModule } from './auth/auth.module';
+import { PaymentsSheetModule } from './payments-sheet/payments-sheet.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { AuthModule } from './auth/auth.module';
     AuthModule,
     UserModule,
     EnterpriseModule,
-    EmployeeModule
+    EmployeeModule,
+    PaymentsSheetModule,
   ],
   controllers: [AppController],
   providers: [

@@ -25,6 +25,8 @@ model enterprise {
   name        String
   users       user[]
   employees   employee[]
+
+  payments_sheet payments_sheet[]
 }
 
 
@@ -46,6 +48,29 @@ model employee {
   enterprise_Id Int @map("enterpriseId")
   payment_type payment_type
   payment_rate    Float
+  employees_payment employee_payment[]
 }
 
+model employee_payment {
+  id          Int      @id @default(autoincrement())
+  employee_id Int @map("employeeId")
+  timesheet_id Int @map("timesheetId")
+  payment_type payment_type
+  payment_rate Float
+  units Float
+  total       Float
+  payment_date DateTime
+
+  employee    employee @relation(fields: [employee_id], references: [id])
+  payments_sheet payments_sheet @relation(fields: [timesheet_id], references: [id])
+}
+
+model payments_sheet {
+  id          Int      @id @default(autoincrement())
+  enterprise_id Int @map("enterpriseId")
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  enterprise  enterprise @relation(fields: [enterprise_id], references: [id])
+  employee_payment employee_payment[]
+}
 
