@@ -71,8 +71,6 @@ export class EmployeeController {
   async remove(@Param('id') id: ParseIntPipe) {
     const removed = await this.employeeService.remove(+id);
   
-    console.log(removed);
-
     return removed;
   }
 }

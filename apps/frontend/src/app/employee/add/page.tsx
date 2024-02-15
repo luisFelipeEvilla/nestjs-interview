@@ -11,42 +11,44 @@ export default function AddEmployeePage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [payment_type, setPaymentType] = useState(new Set([]));
- const cookie = useCookies();
+  const [payment_rate, setPaymentRate] = useState(0);
+  const cookie = useCookies();
 
-const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const token = cookie.get('token');
     const user_cookiee = cookie.get('user');
 
     if (!user_cookiee) {
-        toast.error('User not found');
-        return window.location.href = '/auth';
+      toast.error('User not found');
+      return (window.location.href = '/auth');
     }
 
     const user = JSON.parse(user_cookiee);
 
     const body = {
-        name,
-        email,
-        payment_type: Array.from(payment_type)[0],
-        enterprise_id: user.enterprise_id 
-    }
+      name,
+      email,
+      payment_type: Array.from(payment_type)[0],
+      payment_rate,
+      enterprise_id: user.enterprise_id,
+    };
 
     try {
-        const response = await axios.post('/api/employee', body, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+      const response = await axios.post('/api/employee', body, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        toast.success('Employee added');
-        window.location.href = '/employee';
+      toast.success('Employee added');
+      window.location.href = '/employee';
     } catch (error) {
-        toast.error('Error adding employee');
-        console.error(error);
+      toast.error('Error adding employee');
+      console.error(error);
     }
-}
+  };
 
   return (
     <div className="flex flex-col gap-12">
@@ -87,8 +89,23 @@ const handleSubmit = async (e: FormEvent) => {
           ))}
         </Select>
 
+        <Input
+          type="number"
+          placeholder="Payment Rate"
+          name="payment_rate"
+          value={payment_rate.toString()}
+          onChange={(e) => setPaymentRate(Number(e.target.value))}
+          required
+          min={Array.from(payment_type)[0] === 'SALARY' ? 480 : 12}
+        />
+
         <div className="flex justify-center">
-          <Button  type='submit' color="success" size="md" className="text-white">
+          <Button
+            type="submit"
+            color="success"
+            size="md"
+            className="text-white"
+          >
             Add Employee
           </Button>
         </div>

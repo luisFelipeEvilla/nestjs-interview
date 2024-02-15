@@ -45,6 +45,7 @@ model employee {
   enterprise  enterprise @relation(fields: [enterprise_Id], references: [id])
   enterprise_Id Int @map("enterpriseId")
   payment_type payment_type
+  payment_rate    Float
 }
 
 

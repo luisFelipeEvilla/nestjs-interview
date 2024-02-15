@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma.service';
@@ -8,11 +8,20 @@ export class EmployeeService {
   constructor (private prisma: PrismaService) {}
   
   async create(createEmployeeDto: CreateEmployeeDto) {
+    if (createEmployeeDto.payment_type === 'SALARY' && createEmployeeDto.payment_rate < 480) {
+      throw new BadRequestException('Minimum payment rate for salary is 480');
+    }
+
+    if (createEmployeeDto.payment_type === 'HOURLY' && createEmployeeDto.payment_rate < 12) {
+      throw new BadRequestException('Minimum payment rate for hourly is 12');
+    }
+
     const employee = await this.prisma.employee.create({
       data: {
         name: createEmployeeDto.name,
         email: createEmployeeDto.email,
         payment_type: createEmployeeDto.payment_type,
+        payment_rate: createEmployeeDto.payment_rate,
         enterprise: {
           connect: {
             id: createEmployeeDto.enterprise_id,

@@ -23,6 +23,7 @@ export default function Index() {
   }, []);
   const fetchData = async () => {
     const token = cookie.get('token');
+
     const response = await axios.get('/api/employee', {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -62,6 +63,7 @@ export default function Index() {
           <TableColumn>Full Name</TableColumn>
           <TableColumn>Email</TableColumn>
           <TableColumn>Payment Type</TableColumn>
+          <TableColumn>Payment Rate</TableColumn>
           <TableColumn>Actions</TableColumn>
         </TableHeader>
 
@@ -71,6 +73,7 @@ export default function Index() {
               <TableCell>{employee.name}</TableCell>
               <TableCell>{employee.email}</TableCell>
               <TableCell>{employee.payment_type}</TableCell>
+              <TableCell>{employee.payment_rate} USD</TableCell>
               <TableCell className="flex gap-2">
                 <Button className="bg-blue-600 text-white">
                   <a href={`/employee/${employee.id}`}>Edit</a>

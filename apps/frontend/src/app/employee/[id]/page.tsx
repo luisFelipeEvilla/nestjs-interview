@@ -12,12 +12,12 @@ export default function EditEmployePage({ params }: any) {
   const [email, setEmail] = useState('');
   const [payment_type, setPaymentType] = useState(new Set<string>([]));
   const [employe_id, setEmployeId] = useState(0);
+  const [payment_rate, setPaymentRate] = useState(0);
   const cookie = useCookies();
 
   useEffect(() => {
     fetchData();
   }, []);
-
 
   async function fetchData() {
     const token = cookie.get('token');
@@ -31,6 +31,7 @@ export default function EditEmployePage({ params }: any) {
     setEmail(response.data.email);
     setPaymentType(new Set([response.data.payment_type as string]));
     setEmployeId(response.data.id);
+    setPaymentRate(response.data.payment_rate);
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -49,7 +50,8 @@ export default function EditEmployePage({ params }: any) {
     const body = {
       name,
       email,
-      payment_type: Array.from(payment_type)[0]
+      payment_type: Array.from(payment_type)[0],
+      payment_rate,
     };
 
     try {
@@ -105,6 +107,17 @@ export default function EditEmployePage({ params }: any) {
             </SelectItem>
           ))}
         </Select>
+
+        <Input
+          type="number"
+          label="Payment Rate (USD)"
+          placeholder="Payment Rate (USD)"
+          name="payment_rate"
+          value={payment_rate.toString()}
+          onChange={(e) => setPaymentRate(+e.target.value)}
+          required
+          min={Array.from(payment_type)[0] === 'HOURLY' ? 12 : 480}
+        />
 
         <div className="flex justify-center">
           <Button
