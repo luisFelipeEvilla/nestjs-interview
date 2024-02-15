@@ -51,9 +51,9 @@ export default function Index() {
   return (
     <div className="text-2xl flex flex-col gap-4 py-4 px-4">
       <div className="flex justify-end">
-        <a href="/employee/add">
+        <a href="/enterprise/add">
           <Button color="success" className="text-white">
-            Add Employee
+            Add Enterprise
           </Button>
         </a>
       </div>

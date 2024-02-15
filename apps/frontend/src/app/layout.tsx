@@ -1,7 +1,8 @@
-"use client";
+'use client';
 import { NextUIProvider } from '@nextui-org/react';
 import './global.css';
 import { Toaster } from 'react-hot-toast';
+import AdminNavbar from '../ui/components/Navbar';
 
 export default function RootLayout({
   children,
@@ -11,8 +12,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <NextUIProvider>
-        <body>{children}</body>
-        <Toaster/>
+        <body>
+          <AdminNavbar />
+          {children}
+          <Toaster />
+        </body>
       </NextUIProvider>
     </html>
   );
