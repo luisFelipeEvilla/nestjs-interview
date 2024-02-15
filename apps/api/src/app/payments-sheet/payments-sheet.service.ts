@@ -60,8 +60,36 @@ export class PaymentsSheetService {
     return paymentSheet;
   }
 
-  update(id: number, updatePaymentsSheetDto: UpdatePaymentsSheetDto) {
-    return `This action updates a #${id} paymentsSheet`;
+  async update(id: number, updatePaymentsSheetDto: UpdatePaymentsSheetDto) {
+    const payment_sheet = await this.prisma.payments_sheet.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!payment_sheet) return null;
+
+    const paymentSheet = await this.prisma.payments_sheet.update({
+      where: {
+        id,
+      },
+      data: {
+        check_date: updatePaymentsSheetDto.check_date,
+      },
+    });
+
+    for (const employeePayment of updatePaymentsSheetDto.employee_payment) {
+      await this.prisma.employee_payment.update({
+        where: {
+          id: employeePayment.id,
+        },
+        data: {
+          units: employeePayment.units,
+        },
+      });
+    }
+
+    return paymentSheet;
   }
 
   async remove(id: number) {

@@ -57,8 +57,6 @@ model employee_payment {
   payment_type payment_type
   payment_rate Float
   units        Float        @default(0)
-  total        Float        @default(0)
-
   employee       employee       @relation(fields: [employee_id], references: [id])
   payments_sheet payments_sheet @relation(fields: [timesheet_id], references: [id], onDelete: Cascade)
 }
@@ -69,7 +67,6 @@ model payments_sheet {
   created_at       DateTime           @default(now())
   updated_at       DateTime           @updatedAt
   enterprise       enterprise         @relation(fields: [enterprise_id], references: [id])
-  check_date       DateTime?
+  check_date       DateTime?          @db.Timestamptz(3)
   employee_payment employee_payment[]
-
 }

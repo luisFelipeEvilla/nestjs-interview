@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import {
+  Button,
   Input,
   Table,
   TableBody,
@@ -16,7 +17,9 @@ import toast from 'react-hot-toast';
 type PaymentSheet = {
   id: number;
   created_at: string;
+  check_date: string;
   employee_payment: employee_payment[];
+  enterprise_id: number;
 };
 
 type employee_payment = {
@@ -34,6 +37,8 @@ export default function PaymentSheetDetail({ params }: any) {
     id: 0,
     created_at: '',
     employee_payment: [],
+    check_date: '',
+    enterprise_id: 0,
   });
   const cookies = useCookies();
 
@@ -44,18 +49,17 @@ export default function PaymentSheetDetail({ params }: any) {
     const token = cookies.get('token');
 
     try {
-        const response = await axios.get(`/api/payments-sheet/${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-    
-        setPaymentSheet(response.data);
-    } catch (error) {
-        toast.error('Failed to fetch payment sheet');
-        console.error(error);
-    }
+      const response = await axios.get(`/api/payments-sheet/${params.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      setPaymentSheet(response.data);
+    } catch (error) {
+      toast.error('Failed to fetch payment sheet');
+      console.error(error);
+    }
   }
 
   const handleUnitChange = (event: any, id: number) => {
@@ -66,6 +70,7 @@ export default function PaymentSheetDetail({ params }: any) {
           return {
             ...employee_payment,
             units: +event.target.value,
+            total: employee_payment.payment_rate * +event.target.value,
           };
         }
         return employee_payment;
@@ -74,11 +79,30 @@ export default function PaymentSheetDetail({ params }: any) {
 
     setPaymentSheet({
       ...paymentSheet,
+      // @ts-ignore
+      check_date: new Date(paymentSheet.check_date),
       employee_payment: newEmployeesPayment,
     });
   };
+
+  const handleSubtmit = async () => {
+    const token = cookies.get('token');
+
+    try {
+      await axios.patch(`/api/payments-sheet/${params.id}`, paymentSheet, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast.success('Payment sheet updated successfully');
+    } catch (error) {
+      toast.error('Failed to update payment sheet');
+      console.error(error);
+    }
+  };
+
   return (
-    <div>
+    <div className="flex flex-col gap-4 py-4">
       <div className="flex flex-row-reverse ">
         <Input
           size="sm"
@@ -86,6 +110,11 @@ export default function PaymentSheetDetail({ params }: any) {
           label="Check Date"
           placeholder="Select a Check Date of the payroll"
           type="date"
+          value={paymentSheet.check_date}
+          onChange={(e) =>
+            setPaymentSheet({ ...paymentSheet, check_date: e.target.value })
+          }
+          required
         />
       </div>
       <Table>
@@ -98,36 +127,38 @@ export default function PaymentSheetDetail({ params }: any) {
         </TableHeader>
 
         <TableBody>
-            {
-            paymentSheet.employee_payment.map((employee_payment) => (
-                <TableRow key={employee_payment.id}>
-                  <TableCell>{employee_payment.employee.name}</TableCell>
-                  <TableCell>{employee_payment.payment_type}</TableCell>
-                  <TableCell>{employee_payment.payment_rate} USD</TableCell>
-                  <TableCell>
-                    {employee_payment.payment_type === 'HOURLY' ? (
-                      <Input
-                        size="sm"
-                        type="number"
-                        defaultValue={'0'}
-                        value={employee_payment.units.toString()}
-                        onChange={(e) =>
-                          handleUnitChange(e, employee_payment.id)
-                        }
-                        min={0}
-                      />
-                    ) : (
-                      1
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {employee_payment.payment_rate * employee_payment.units} USD
-                  </TableCell>
-                </TableRow>
-              ))
-            }
+          {paymentSheet.employee_payment.map((employee_payment) => (
+            <TableRow key={employee_payment.id}>
+              <TableCell>{employee_payment.employee.name}</TableCell>
+              <TableCell>{employee_payment.payment_type}</TableCell>
+              <TableCell>{employee_payment.payment_rate} USD</TableCell>
+              <TableCell>
+                {employee_payment.payment_type === 'HOURLY' ? (
+                  <Input
+                    size="sm"
+                    type="number"
+                    defaultValue={'0'}
+                    value={employee_payment.units.toString()}
+                    onChange={(e) => handleUnitChange(e, employee_payment.id)}
+                    min={0}
+                  />
+                ) : (
+                  1
+                )}
+              </TableCell>
+              <TableCell>
+                {employee_payment.payment_rate * employee_payment.units} USD
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
+
+      <div className="flex flex-row-reverse ">
+        <Button onClick={handleSubtmit} color="success" className="text-white">
+          Save
+        </Button>
+      </div>
     </div>
   );
 }
