@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentsSheetDto } from './dto/create-payments-sheet.dto';
 import { UpdatePaymentsSheetDto } from './dto/update-payments-sheet.dto';
 import { PrismaService } from '../prisma.service';
+import { payment_type } from '@prisma/client';
 
 @Injectable()
 export class PaymentsSheetService {
@@ -14,6 +15,24 @@ export class PaymentsSheetService {
         enterprise_id,
       },
     });
+
+    const employees = await this.prisma.employee.findMany({
+      where: {
+        enterprise_Id:  enterprise_id,
+      },
+    });
+
+    for (const employee of employees) {
+      await this.prisma.employee_payment.create({
+        data: {
+          employee_id: employee.id,
+          payment_type: employee.payment_type,
+          payment_rate: employee.payment_rate,
+          timesheet_id: paymentSheet.id,
+          units: employee.payment_type === payment_type.SALARY ? 1 : 0 ,
+        },
+      });
+    }
 
     return paymentSheet;
   }
@@ -29,6 +48,13 @@ export class PaymentsSheetService {
       where: {
         id,
       },
+      include: {
+        employee_payment: {
+          include: {
+            employee: true,
+          },
+        }
+      }
     });
 
     return paymentSheet;

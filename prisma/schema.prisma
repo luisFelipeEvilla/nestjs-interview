@@ -21,56 +21,55 @@ enum payment_type {
 }
 
 model enterprise {
-  id          Int      @id @default(autoincrement())
-  name        String
-  users       user[]
-  employees   employee[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  users     user[]
+  employees employee[]
 
   payments_sheet payments_sheet[]
 }
 
-
 model user {
-  id          Int      @id @default(autoincrement())
-  name        String   
-  email       String  @unique
-  password    String
-  enterprise  enterprise @relation(fields: [enterprise_id], references: [id])
-  enterprise_id Int @map("enterpriseId")
-  role        role    @default(USER)
+  id            Int        @id @default(autoincrement())
+  name          String
+  email         String     @unique
+  password      String
+  enterprise    enterprise @relation(fields: [enterprise_id], references: [id])
+  enterprise_id Int        @map("enterpriseId")
+  role          role       @default(USER)
 }
 
 model employee {
-  id          Int      @id @default(autoincrement())
-  name        String
-  email       String
-  enterprise  enterprise @relation(fields: [enterprise_Id], references: [id])
-  enterprise_Id Int @map("enterpriseId")
-  payment_type payment_type
-  payment_rate    Float
+  id                Int                @id @default(autoincrement())
+  name              String
+  email             String
+  enterprise        enterprise         @relation(fields: [enterprise_Id], references: [id])
+  enterprise_Id     Int                @map("enterpriseId")
+  payment_type      payment_type
+  payment_rate      Float
   employees_payment employee_payment[]
 }
 
 model employee_payment {
-  id          Int      @id @default(autoincrement())
-  employee_id Int @map("employeeId")
-  timesheet_id Int @map("timesheetId")
+  id           Int          @id @default(autoincrement())
+  employee_id  Int          @map("employeeId")
+  timesheet_id Int          @map("timesheetId")
   payment_type payment_type
   payment_rate Float
-  units Float
-  total       Float
-  payment_date DateTime
+  units        Float        @default(0)
+  total        Float        @default(0)
 
-  employee    employee @relation(fields: [employee_id], references: [id])
-  payments_sheet payments_sheet @relation(fields: [timesheet_id], references: [id])
+  employee       employee       @relation(fields: [employee_id], references: [id])
+  payments_sheet payments_sheet @relation(fields: [timesheet_id], references: [id], onDelete: Cascade)
 }
 
 model payments_sheet {
-  id          Int      @id @default(autoincrement())
-  enterprise_id Int @map("enterpriseId")
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  enterprise  enterprise @relation(fields: [enterprise_id], references: [id])
+  id               Int                @id @default(autoincrement())
+  enterprise_id    Int                @map("enterpriseId")
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+  enterprise       enterprise         @relation(fields: [enterprise_id], references: [id])
+  check_date       DateTime?
   employee_payment employee_payment[]
-}
 
+}

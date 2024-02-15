@@ -13,7 +13,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import toast from 'react-hot-toast';
-export default function PaymentSheetsPage() {
+
+export default function PaymentSheetsPage({params}: any) {
   const [timeSheets, setTimeSheets] = useState<any[]>([]);
   const cookies = useCookies();
 
@@ -28,6 +29,8 @@ export default function PaymentSheetsPage() {
         Authorization: `Bearer ${token}`,
       },
     });
+
+
     setTimeSheets(response.data);
   }
 
