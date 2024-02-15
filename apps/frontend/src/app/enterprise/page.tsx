@@ -69,7 +69,7 @@ export default function Index() {
               <TableCell>{employee.name}</TableCell>
               <TableCell className="flex gap-2">
                 <Button className="bg-blue-600 text-white">
-                  <a href={`/employee/${employee.id}`}>Edit</a>
+                  <a href={`/enterprise/${employee.id}`}>Edit</a>
                 </Button>
                 <Button
                   onPress={(e) => handleDelete(employee.id)}
