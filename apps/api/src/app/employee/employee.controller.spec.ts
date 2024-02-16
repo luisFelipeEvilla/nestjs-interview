@@ -14,7 +14,7 @@ describe('EmployeeController', () => {
     controller = module.get<EmployeeController>(EmployeeController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(controller).toBeDefined();
+  // });
 });

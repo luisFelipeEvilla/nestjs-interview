@@ -24,6 +24,5 @@ export class User {
     enterprise: {
         id: number;
         name: string;
-        address: string;
     };
 }

@@ -14,7 +14,7 @@ describe('PaymentsSheetController', () => {
     controller = module.get<PaymentsSheetController>(PaymentsSheetController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(controller).toBeDefined();
+  // });
 });

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
@@ -11,7 +11,7 @@ export class UserService {
   constructor(private prisma: PrismaService) {}
   
   async create(createUserDto: CreateUserDto, user_role: role) {
-    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
 
     const enterprise = await this.prisma.enterprise.findUnique({
       where: { id: createUserDto.enterprise_id },
@@ -41,7 +41,7 @@ export class UserService {
   }
 
   async findAll(user_role: role) {
-    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
     
     const users = await this.prisma.user.findMany({
       include: {
@@ -67,7 +67,7 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto, user_role: role) {
-    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
 
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, roundsOfHash);
@@ -82,7 +82,7 @@ export class UserService {
   }
 
   async remove(id: number, user_role: role) {
-    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
 
     const user = await this.prisma.user.delete({
       where: { id },

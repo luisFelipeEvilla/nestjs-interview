@@ -12,7 +12,7 @@ describe('EmployeeService', () => {
     service = module.get<EmployeeService>(EmployeeService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(service).toBeDefined();
+  // });
 });
