@@ -1,64 +1,14 @@
-import { UpdateEmployeeDto } from './../employee/dto/update-employee.dto';
-import { PrismaModule } from 'nestjs-prisma';
+import { mockUser, mockUsers, updateUserDto, userDto } from './../../mock/users';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { PrismaService } from '../prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { role } from '@prisma/client';
-import { User } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { mockEnterprises } from '@ocmi/api/mock/enterprise';
 
 describe('UserService', () => {
   let service: UserService;
-
-  const userDto: CreateUserDto = {
-    email: 'mock@mock.com',
-    name: 'mock',
-    password: '123456',
-    role: role.ADMIN,
-    enterprise_id: 1,
-  };
-
-  const updateUserDto: UpdateUserDto = {
-    email: "mock@updated.com",
-  }
-
-  const mockEnterprise = {
-    id: 1,
-    name: 'mock',
-  };
-
-  const mockEnterprises = [mockEnterprise];
-
-  const mockUser: User = {
-    id: 1,
-    email: 'mock@mock.com',
-    name: 'mock',
-    password: '123456',
-    role: role.ADMIN,
-    enterprise_id: 1,
-    enterprise: mockEnterprise,
-  };
-
-  const mockUpdatedUser: User = {
-    ...mockUser,
-    email: 'mock@updated.com'
-  }
-
-  const mockUsers: User[] = [
-    mockUser,
-    {
-      ...mockUser,
-      enterprise_id: 2,
-      enterprise: {
-        id: 2,
-        name: 'mock 2',
-      },
-    },
-  ];
-
   let mockPrismaService = {
     user: {
       findUnique: jest.fn(
