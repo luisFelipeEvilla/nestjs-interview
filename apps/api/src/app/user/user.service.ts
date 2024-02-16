@@ -3,6 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
+import { role } from '@prisma/client';
 
 const roundsOfHash = 10;
 @Injectable()
@@ -37,7 +38,9 @@ export class UserService {
     return user;
   }
 
-  async findAll() {
+  async findAll(user_role: role) {
+    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    
     const users = await this.prisma.user.findMany({
       include: {
         enterprise: true
@@ -60,7 +63,9 @@ export class UserService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto, user_role: role) {
+    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, roundsOfHash);
     }
@@ -73,7 +78,9 @@ export class UserService {
     return user;
   }
 
-  async remove(id: number) {
+  async remove(id: number, user_role: role) {
+    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+
     const user = await this.prisma.user.delete({
       where: { id },
     });

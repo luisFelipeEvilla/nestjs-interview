@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 @ApiTags('user')
@@ -26,12 +29,16 @@ export class UserController {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User, isArray: true, description: 'List of all users' })
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Req() req: { user: User }) {
+    return this.userService.findAll(req.user.role);
   }
 
   @Get(':id')
+    @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User, description: 'User found successfully' })
   @ApiParam({ name: 'id', type: Number })
   findOne(@Param('id') id: ParseIntPipe) {
@@ -39,16 +46,24 @@ export class UserController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User, description: 'User updated successfully' })
   @ApiParam({ name: 'id', type: Number })
-  update(@Param('id') id: ParseIntPipe, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  update(
+    @Req() req: { user: User },
+    @Param('id') id: ParseIntPipe, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(+id, updateUserDto, req.user.role);
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User, description: 'User removed successfully' })
   @ApiParam({ name: 'id', type: Number })
-  remove(@Param('id') id: ParseIntPipe) {
-    return this.userService.remove(+id);
+  remove(
+    @Req() req: { user: User },
+    @Param('id') id: ParseIntPipe) {
+    return this.userService.remove(+id, req.user.role);
   }
 }
