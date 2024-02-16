@@ -53,6 +53,7 @@ export default function PaymentSheetsPage({ params }: any) {
       <Table>
         <TableHeader>
           <TableColumn>ID</TableColumn>
+          <TableColumn>Enterprise</TableColumn>
           <TableColumn>Created At</TableColumn>
           <TableColumn>Actions</TableColumn>
         </TableHeader>
@@ -61,6 +62,7 @@ export default function PaymentSheetsPage({ params }: any) {
           {timeSheets.map((timeSheet) => (
             <TableRow key={timeSheet.id}>
               <TableCell>{timeSheet.id}</TableCell>
+              <TableCell>{timeSheet.enterprise.name}</TableCell>
               <TableCell>
                 {new Date(timeSheet.created_at).toLocaleString()}
               </TableCell>

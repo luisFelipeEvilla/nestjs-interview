@@ -38,7 +38,11 @@ export class PaymentsSheetService {
   }
 
   async findAll() {
-    const paymentsSheet = await this.prisma.payments_sheet.findMany();
+    const paymentsSheet = await this.prisma.payments_sheet.findMany({
+      include: {
+        enterprise: true
+      }
+    });
     
     return paymentsSheet;
   }
