@@ -156,6 +156,12 @@ describe('UserService', () => {
     });
   });
 
+  it("fetch a user that doesn't exists", async () => {
+    const result = await service.findOne(999);
+
+    expect(result).toBeInstanceOf(NotFoundException)
+  })
+
   it('update a user as admin', async () =>  {
     const result = await service.update(mockUser.id, updateUserDto, role.ADMIN);
 
