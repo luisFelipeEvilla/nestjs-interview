@@ -10,31 +10,37 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import toast from 'react-hot-toast';
+import { AuthContext } from '../../contexts/authContext';
 
 export default function Index() {
-  const [employees, setEmployees] = useState([]);
-  const cookie = useCookies();
-
+  const [enterprises, setEnterprises] = useState([]);
+  const {token} = useContext(AuthContext);
+  
   useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-    const token = cookie.get('token');
-    const response = await axios.get('/api/enterprise', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    if (!token) return;
 
-    setEmployees(response.data);
+    fetchData();
+  }, [token]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/enterprise', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      setEnterprises(response.data);
+    } catch (error) {
+      console.error(error);
+      toast.error('Error fetching enterprises');
+    }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      const token = cookie.get('token');
       await axios.delete(`/api/enterprise/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,15 +63,15 @@ export default function Index() {
           </Button>
         </a>
       </div>
-      <Table>
+      <Table data-testid="enterprise-table">
         <TableHeader>
-          <TableColumn>Enterprise Name</TableColumn>
-          <TableColumn>Actions</TableColumn>
+          <TableColumn data-testid="name-column">Enterprise Name</TableColumn>
+          <TableColumn data-testid="actions-column">Actions</TableColumn>
         </TableHeader>
 
         <TableBody>
-          {employees.map((employee: any) => (
-            <TableRow>
+          {enterprises.map((employee: any) => (
+            <TableRow data-testid="enterprise-row">
               <TableCell>{employee.name}</TableCell>
               <TableCell className="flex gap-2">
                 <a href={`/dashboard/enterprise/${employee.id}`}>
