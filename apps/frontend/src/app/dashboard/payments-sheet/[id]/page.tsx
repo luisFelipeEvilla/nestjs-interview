@@ -121,7 +121,7 @@ export default function PaymentSheetDetail({ params }: any) {
           required
         />
       </div>
-      <Table isStriped>
+      <Table>
         <TableHeader>
           <TableColumn>Employee Name</TableColumn>
           <TableColumn>Payment Type</TableColumn>
@@ -155,7 +155,6 @@ export default function PaymentSheetDetail({ params }: any) {
               </TableCell>
             </TableRow>
           ))}
-
         </TableBody>
       </Table>
 

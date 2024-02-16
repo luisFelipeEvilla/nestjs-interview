@@ -16,21 +16,36 @@ import { useContext } from 'react';
 export default function AdminNavbar() {
   const { user, logout } = useContext(AuthContext);
 
+  const links = [
+    {
+      name: 'Enterprise',
+      href: '/dashboard/enterprise',
+    },
+    {
+      name: 'Employee',
+      href: '/dashboard/employee',
+    },
+    {
+      name: 'Payments Sheet',
+      href: '/dashboard/payments-sheet',
+    },
+    {
+      name: "users",
+      href: "/dashboard/user"
+    },
+  ];
+
   return (
     <Navbar isBordered>
       <NavbarBrand>PayPeo</NavbarBrand>
       <NavbarContent>
-        <NavbarItem>
-          <Link href="/dashboard/enterprise">Enterprise</Link>
-        </NavbarItem>
-
-        <NavbarItem>
-          <Link href="/dashboard/employee">Employee</Link>
-        </NavbarItem>
-
-        <NavbarItem>
-          <Link href="/dashboard/payments-sheet">Payments Sheet</Link>
-        </NavbarItem>
+       {
+          links.map((link) => (
+            <Link key={link.name} href={link.href}>
+              <NavbarItem>{link.name}</NavbarItem>
+            </Link>
+          ))
+       }
 
         <Dropdown>
           <DropdownTrigger>
@@ -41,7 +56,7 @@ export default function AdminNavbar() {
               color="secondary"
               name="Jason Hughes"
               size="sm"
-              src={"https://i.pravatar.cc/150?u=a042581f4e29026024d"}
+              src={'https://i.pravatar.cc/150?u=a042581f4e29026024d'}
               id="settings-button"
             />
           </DropdownTrigger>
