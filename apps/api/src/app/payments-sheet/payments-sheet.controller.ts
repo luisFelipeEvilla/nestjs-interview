@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PaymentsSheetService } from './payments-sheet.service';
 import { CreatePaymentsSheetDto } from './dto/create-payments-sheet.dto';
@@ -47,7 +48,7 @@ export class PaymentsSheetController {
   @UseGuards(AuthGuard('jwt'))
   update(
     @Req() req: { user: User },
-    @Param('id') id: string,
+    @Param('id') id: ParseIntPipe,
     @Body() updatePaymentsSheetDto: UpdatePaymentsSheetDto,
   ) {
     return this.paymentsSheetService.update(+id, updatePaymentsSheetDto, req.user.role, req.user.enterprise_id);
@@ -58,7 +59,7 @@ export class PaymentsSheetController {
   @UseGuards(AuthGuard('jwt'))
   remove(
     @Req() req: { user: User },
-    @Param('id') id: string) {
+    @Param('id') id: ParseIntPipe) {
     return this.paymentsSheetService.remove(+id, req.user.role, req.user.enterprise_id);
   }
 }
