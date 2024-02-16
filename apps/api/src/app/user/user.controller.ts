@@ -48,7 +48,7 @@ export class UserController {
   findOne(
     @Req() req: { user: User },
     @Param('id') id: ParseIntPipe) {
-    return this.userService.findOne(+id, req.user.role);
+    return this.userService.findOne(+id);
   }
 
   @Patch(':id')
