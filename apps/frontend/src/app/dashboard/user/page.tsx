@@ -16,8 +16,8 @@ import { AuthContext } from '../../contexts/authContext';
 
 export default function Index() {
   const [users, setEmployees] = useState([]);
-  const {token} = useContext(AuthContext);
-   
+  const { token } = useContext(AuthContext);
+
   useEffect(() => {
     if (!token) return;
 
@@ -31,7 +31,7 @@ export default function Index() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+
       setEmployees(response.data);
     } catch (error) {
       console.error(error);
@@ -82,9 +82,9 @@ export default function Index() {
               <TableCell>{user.role}</TableCell>
               <TableCell>{user.enterprise.name}</TableCell>
               <TableCell className="flex gap-2">
-                <Button className="bg-blue-600 text-white">
-                  <a href={`/dashboard/employee/${user.id}`}>Edit</a>
-                </Button>
+                <a href={`/dashboard/user/${user.id}`}>
+                  <Button className="bg-blue-600 text-white">Edit</Button>
+                </a>
                 <Button
                   onPress={(e) => handleDelete(user.id)}
                   color="danger"
