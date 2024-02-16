@@ -125,6 +125,12 @@ describe('UserService', () => {
     expect(result).toBeInstanceOf(UnauthorizedException);
   });
 
+  it("Create a user with a enterprise that doesn't exists", async() => {
+    const result = await service.create({ ...userDto, enterprise_id: 999}, role.ADMIN);
+
+    expect(result).toBeInstanceOf(NotFoundException);
+  })
+
   it('fetch users as admin', async () => {
     const result = await service.findAll(role.ADMIN);
 
