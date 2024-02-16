@@ -13,13 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <NextUIProvider>
-        <body>
-          <AuthProvider>
-            <AdminNavbar />
-            <div className="max-w-[1200px] mx-auto py-6 px-4">{children}</div>
-            <Toaster />
-          </AuthProvider>
-        </body>
+        <body>{children}</body>
       </NextUIProvider>
     </html>
   );

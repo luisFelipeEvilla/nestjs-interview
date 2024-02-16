@@ -18,18 +18,18 @@ export default function AdminNavbar() {
 
   const links = [
     {
-      name: 'Employee',
+      name: 'Employees',
       href: '/dashboard/employee',
     },
     {
-      name: 'Payments Sheet',
+      name: 'Payments Sheets',
       href: '/dashboard/payments-sheet',
     },
   ];
 
   const adminLinks = [
     {
-      name: 'Enterprise',
+      name: 'Enterprises',
       href: '/dashboard/enterprise',
     },
     {

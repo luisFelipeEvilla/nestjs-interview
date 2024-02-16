@@ -38,7 +38,7 @@ export function AuthProvider({ children }: any) {
       maxAge: 7 * 24 * 60 * 60,
     });
 
-    window.location.href = '/';
+    window.location.href = '/dashboard/employee';
   };
 
   const logout = () => {
