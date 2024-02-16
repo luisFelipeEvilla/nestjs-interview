@@ -38,7 +38,6 @@ export class PaymentsSheetService {
   }
 
   async findAll(user_role: role, enterpriseId: number) {
-    console.log(user_role, enterpriseId);
     const paymentsSheet = await this.prisma.payments_sheet.findMany({
       where: {
         enterprise_id: user_role === role.USER ? enterpriseId : undefined,
