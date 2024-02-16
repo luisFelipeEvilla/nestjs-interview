@@ -55,7 +55,7 @@ export function AuthProvider({ children }: any) {
       maxAge: -1,
     });
 
-    window.location.href = '/login';
+    window.location.href = '/auth';
   };
 
   return (
