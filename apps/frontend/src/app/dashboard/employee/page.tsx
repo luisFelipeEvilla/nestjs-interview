@@ -31,7 +31,9 @@ export default function Index() {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+      
+      console.log(axios.get);
+      console.log(response);
       setEmployees(response.data);
     } catch (error) {
       console.error(error);
@@ -63,22 +65,24 @@ export default function Index() {
           </Button>
         </a>
       </div>
-      <Table>
+      <Table
+        data-testid="employee-table"
+      >
         <TableHeader>
-          <TableColumn>Full Name</TableColumn>
-          <TableColumn>Email</TableColumn>
-          <TableColumn>Payment Type</TableColumn>
-          <TableColumn>Payment Rate</TableColumn>
-          <TableColumn>Actions</TableColumn>
+          <TableColumn data-testid="name-column">Full Name</TableColumn>
+          <TableColumn data-testid="email-column">Email</TableColumn>
+          <TableColumn data-testid="payment-type-column">Payment Type</TableColumn>
+          <TableColumn data-testid="payment-rate-column">Payment Rate</TableColumn>
+          <TableColumn data-testid="actions-column" >Actions</TableColumn>
         </TableHeader>
 
         <TableBody>
           {employees.map((employee: any) => (
-            <TableRow>
+            <TableRow data-testid="employee-row">
               <TableCell>{employee.name}</TableCell>
-              <TableCell>{employee.email}</TableCell>
-              <TableCell>{employee.payment_type}</TableCell>
-              <TableCell>{employee.payment_rate} USD</TableCell>
+              <TableCell >{employee.email}</TableCell>
+              <TableCell >{employee.payment_type}</TableCell>
+              <TableCell >{employee.payment_rate} USD</TableCell>
               <TableCell className="flex gap-2">
                 <Button className="bg-blue-600 text-white">
                   <a href={`/dashboard/employee/${employee.id}`}>Edit</a>

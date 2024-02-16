@@ -1,18 +1,8 @@
-describe('Page', () => {
-  it('should render successfully', () => {
-    const { baseElement } = render(
-      <AuthProvider >
-        <Page />
-      </AuthProvider>,
-    );
-    expect(baseElement).toBeTruthy();
-  });
-});
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import Page from './page';
-import { AuthProvider, AuthContext } from '../contexts/authContext';
+import { AuthContext } from '../contexts/authContext';
 
 jest.mock('axios');
 
@@ -30,9 +20,9 @@ const mockContextValue = {
 describe('Page', () => {
   beforeEach(() => {
     render(
-      <AuthProvider value={mockContextValue}>
+      <AuthContext.Provider value={mockContextValue}>
         <Page />
-      </AuthProvider>
+      </AuthContext.Provider>,
     );
   });
 
@@ -50,11 +40,32 @@ describe('Page', () => {
   });
 
   it('should update password state on input change', () => {
-    const passwordInput: HTMLInputElement = screen.getByPlaceholderText('Password');
+    const passwordInput: HTMLInputElement =
+      screen.getByPlaceholderText('Password');
     expect(passwordInput).toBeInTheDocument();
 
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     expect(passwordInput.value).toBe('password123');
+  });
+
+  it('should fire login function on form submit', async () => {
+    const emailInput = screen.getByPlaceholderText('Email');
+    const passwordInput = screen.getByPlaceholderText('Password');
+    const signinButton = screen.getByText('Sign in');
+
+    fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+
+    //@ts-ignore
+    axios.post.mockResolvedValueOnce({
+      data: { user: mockContextValue.user, token: mockContextValue.token },
+    });
+
+    fireEvent.click(signinButton);
+
+    await waitFor(() => {
+      expect(mockContextValue.login).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('should display error message on invalid email or password', async () => {
@@ -71,7 +82,9 @@ describe('Page', () => {
     fireEvent.click(signinButton);
 
     await waitFor(() => {
-      expect(screen.getAllByText('Invalid email or password')[0]).toBeInTheDocument();
+      expect(
+        screen.getAllByText('Invalid email or password')[0],
+      ).toBeInTheDocument();
     });
   });
 });
