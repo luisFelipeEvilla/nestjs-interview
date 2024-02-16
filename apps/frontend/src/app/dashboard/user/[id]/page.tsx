@@ -2,7 +2,6 @@
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
 import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
 import axios from 'axios';
-import { useCookies } from 'next-client-cookies';
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 

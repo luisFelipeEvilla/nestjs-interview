@@ -35,7 +35,7 @@ export default function Index() {
       setEmployees(response.data);
     } catch (error) {
       console.error(error);
-      toast.error('Error fetching employees');
+      toast.error('Error fetching Users');
     }
   };
 

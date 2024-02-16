@@ -18,10 +18,6 @@ export default function AdminNavbar() {
 
   const links = [
     {
-      name: 'Enterprise',
-      href: '/dashboard/enterprise',
-    },
-    {
       name: 'Employee',
       href: '/dashboard/employee',
     },
@@ -29,9 +25,16 @@ export default function AdminNavbar() {
       name: 'Payments Sheet',
       href: '/dashboard/payments-sheet',
     },
+  ];
+
+  const adminLinks = [
     {
-      name: "users",
-      href: "/dashboard/user"
+      name: 'Enterprise',
+      href: '/dashboard/enterprise',
+    },
+    {
+      name: 'Users',
+      href: '/dashboard/user',
     },
   ];
 
@@ -39,13 +42,18 @@ export default function AdminNavbar() {
     <Navbar isBordered>
       <NavbarBrand>PayPeo</NavbarBrand>
       <NavbarContent>
-       {
-          links.map((link) => (
+        {links.map((link) => (
+          <Link key={link.name} href={link.href}>
+            <NavbarItem>{link.name}</NavbarItem>
+          </Link>
+        ))}
+
+        {user?.role === 'ADMIN' &&
+          adminLinks.map((link) => (
             <Link key={link.name} href={link.href}>
               <NavbarItem>{link.name}</NavbarItem>
             </Link>
-          ))
-       }
+          ))}
 
         <Dropdown>
           <DropdownTrigger>
