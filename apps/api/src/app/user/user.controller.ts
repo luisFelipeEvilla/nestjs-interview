@@ -23,9 +23,13 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User,  description: 'User created successfully' })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  create(
+    @Req() req: { user: User },
+    @Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto, req.user.role);
   }
 
   @Get()
@@ -41,8 +45,10 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'))
   @ApiOkResponse({ type: User, description: 'User found successfully' })
   @ApiParam({ name: 'id', type: Number })
-  findOne(@Param('id') id: ParseIntPipe) {
-    return this.userService.findOne(+id);
+  findOne(
+    @Req() req: { user: User },
+    @Param('id') id: ParseIntPipe) {
+    return this.userService.findOne(+id, req.user.role);
   }
 
   @Patch(':id')

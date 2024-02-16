@@ -10,7 +10,9 @@ const roundsOfHash = 10;
 export class UserService {
   constructor(private prisma: PrismaService) {}
   
-  async create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto, user_role: role) {
+    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+
     const enterprise = await this.prisma.enterprise.findUnique({
       where: { id: createUserDto.enterprise_id },
     });
@@ -50,7 +52,9 @@ export class UserService {
     return users;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user_role: role) {
+    if (user_role !== role.ADMIN) return new NotFoundException('You are not authorized to perform this action');
+    
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
