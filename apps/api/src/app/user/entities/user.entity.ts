@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { role } from "@prisma/client";
 
 export class User {
     @ApiProperty()
@@ -14,7 +15,7 @@ export class User {
     password: string;
 
     @ApiProperty()
-    role: string;
+    role: role;
 
     @ApiProperty()
     enterprise_id: number;

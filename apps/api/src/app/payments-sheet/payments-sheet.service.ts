@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentsSheetDto } from './dto/create-payments-sheet.dto';
 import { UpdatePaymentsSheetDto } from './dto/update-payments-sheet.dto';
 import { PrismaService } from '../prisma.service';
-import { payment_type } from '@prisma/client';
+import { payment_type, role } from '@prisma/client';
 
 @Injectable()
 export class PaymentsSheetService {
@@ -37,8 +37,12 @@ export class PaymentsSheetService {
     return paymentSheet;
   }
 
-  async findAll() {
+  async findAll(user_role: role, enterpriseId: number) {
+    console.log(user_role, enterpriseId);
     const paymentsSheet = await this.prisma.payments_sheet.findMany({
+      where: {
+        enterprise_id: user_role === role.USER ? enterpriseId : undefined,
+      },
       include: {
         enterprise: true
       }
@@ -47,10 +51,12 @@ export class PaymentsSheetService {
     return paymentsSheet;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user_role: role, enterpriseId: number) {
+
     const paymentSheet = await this.prisma.payments_sheet.findUnique({
       where: {
         id,
+        enterprise_id: user_role === role.USER ? enterpriseId : undefined,
       },
       include: {
         employee_payment: {
@@ -64,10 +70,11 @@ export class PaymentsSheetService {
     return paymentSheet;
   }
 
-  async update(id: number, updatePaymentsSheetDto: UpdatePaymentsSheetDto) {
+  async update(id: number, updatePaymentsSheetDto: UpdatePaymentsSheetDto, user_role: role, enterpriseId: number) {
     const payment_sheet = await this.prisma.payments_sheet.findUnique({
       where: {
         id,
+        enterprise_id: user_role === role.USER ? enterpriseId : undefined,
       },
     });
 
@@ -96,10 +103,11 @@ export class PaymentsSheetService {
     return paymentSheet;
   }
 
-  async remove(id: number) {
+  async remove(id: number, user_role: role, enterpriseId: number) {
     const paymentSheet = await this.prisma.payments_sheet.delete({
       where: {
         id,
+        enterprise_id: user_role === role.USER ? enterpriseId : undefined,
       },
     });
 

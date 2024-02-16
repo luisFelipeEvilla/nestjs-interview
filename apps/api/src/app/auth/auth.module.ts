@@ -15,6 +15,7 @@ export const jwtSecret = 'zjP9h6ZI5LoSKCRj';
   imports: [
     PassportModule,
     JwtModule.register({
+      global: true,
       secret: jwtSecret,
       signOptions: { expiresIn: '7d' }, // e.g. 30s, 7d, 24h
     }),
@@ -22,5 +23,6 @@ export const jwtSecret = 'zjP9h6ZI5LoSKCRj';
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

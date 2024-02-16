@@ -20,8 +20,9 @@ export default function PaymentSheetsPage({ params }: any) {
   const { token } = useContext(AuthContext);
 
   useEffect(() => {
+    if (!token) return;
     fetchData();
-  }, []);
+  }, [token]);
   async function fetchData() {
     const response = await axios.get('/api/payments-sheet', {
       headers: {
