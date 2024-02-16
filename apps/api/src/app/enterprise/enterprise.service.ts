@@ -1,4 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { role } from '@prisma/client';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
 import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
 import { PrismaService } from '../prisma.service';
@@ -7,7 +8,9 @@ import { PrismaService } from '../prisma.service';
 export class EnterpriseService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createEnterpriseDto: CreateEnterpriseDto) {
+  async create(createEnterpriseDto: CreateEnterpriseDto, user_role: role) {
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
+    
     const enterprise = await this.prisma.enterprise.create({
       data: {
         ...createEnterpriseDto
@@ -23,7 +26,8 @@ export class EnterpriseService {
     return enterprises;
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user_role: role) {
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
     const enterprise = await this.prisma.enterprise.findUnique({
       where: { id },
     });
@@ -33,7 +37,9 @@ export class EnterpriseService {
     return enterprise;
   }
 
-  async update(id: number, updateEnterpriseDto: UpdateEnterpriseDto) {
+  async update(id: number, updateEnterpriseDto: UpdateEnterpriseDto, user_role: role) {
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
+
     const enterprise = await this.prisma.enterprise.update({
       where: { id },
       data: {
@@ -44,7 +50,9 @@ export class EnterpriseService {
     return enterprise;
   }
 
-  async remove(id: number) {
+  async remove(id: number, user_role: role ) {
+    if (user_role !== role.ADMIN) return new UnauthorizedException('You are not authorized to perform this action');
+
     const enterprise = await this.prisma.enterprise.delete({
       where: { id },
     });
