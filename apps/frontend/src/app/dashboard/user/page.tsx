@@ -63,19 +63,19 @@ export default function Index() {
           </Button>
         </a>
       </div>
-      <Table>
+      <Table data-testid="enterprise-table">
         <TableHeader>
-          <TableColumn>Id</TableColumn>
-          <TableColumn>Full Name</TableColumn>
-          <TableColumn>Email</TableColumn>
-          <TableColumn>Role</TableColumn>
-          <TableColumn>Enterprise Name</TableColumn>
-          <TableColumn>Actions</TableColumn>
+          <TableColumn data-testid="id-column">Id</TableColumn>
+          <TableColumn data-testid="name-column">Full Name</TableColumn>
+          <TableColumn data-testid="email-column">Email</TableColumn>
+          <TableColumn data-testid="role-column">Role</TableColumn>
+          <TableColumn data-testid="enterprise-name-column">Enterprise Name</TableColumn>
+          <TableColumn data-testid="actions-column">Actions</TableColumn>
         </TableHeader>
 
         <TableBody>
           {users.map((user: any) => (
-            <TableRow>
+            <TableRow data-testid="user-row">
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.name}</TableCell>
               <TableCell>{user.email}</TableCell>
