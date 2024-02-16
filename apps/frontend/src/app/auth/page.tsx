@@ -1,15 +1,16 @@
 'use client';
 import { Button, Input } from '@nextui-org/react';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useCookies } from 'next-client-cookies';
+import { AuthContext } from '../contexts/authContext';
 
 export default function Singin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);
-  const cookie = useCookies();
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
     setError(false);
@@ -25,17 +26,7 @@ export default function Singin() {
       });
 
 
-      cookie.set('token', response.data.accessToken, {
-        path: '/',
-        expires: new Date(Date.now() + 60 * 60 * 24 * 7),
-      });
-
-      cookie.set('user', JSON.stringify(response.data.user), {
-        path: '/',
-        expires: new Date(Date.now() + 60 * 60 * 24 * 7),
-      });
-
-      window.location.href = '/';
+      login(response.data.user, response.data.accessToken);
       
       // const cookieData = {
       //   key: 'token',

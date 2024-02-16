@@ -10,32 +10,39 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import toast from 'react-hot-toast';
+import { AuthContext } from '../contexts/authContext';
 
 export default function Index() {
   const [employees, setEmployees] = useState([]);
   const cookie = useCookies();
-
+  const {token} = useContext(AuthContext);
+   
   useEffect(() => {
+    if (!token) return;
+
     fetchData();
-  }, []);
+  }, [token]);
+
   const fetchData = async () => {
-    const token = cookie.get('token');
-
-    const response = await axios.get('/api/employee', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    setEmployees(response.data);
+    try {
+      const response = await axios.get('/api/employee', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      setEmployees(response.data);
+    } catch (error) {
+      console.error(error);
+      toast.error('Error fetching employees');
+    }
   };
 
   const handleDelete = async (id: number) => {
     try {
-      const token = cookie.get('token');
       await axios.delete(`/api/employee/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
