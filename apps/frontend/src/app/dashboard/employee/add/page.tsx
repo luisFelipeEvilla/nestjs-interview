@@ -1,70 +1,48 @@
 'use client';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
 import axios from 'axios';
-import { useCookies } from 'next-client-cookies';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 const paymentTypes = ['HOURLY', 'SALARY'];
 
-export default function EditEmployePage({ params }: any) {
+export default function AddEmployeePage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [payment_type, setPaymentType] = useState(new Set<string>([]));
-  const [employe_id, setEmployeId] = useState(0);
+  const [payment_type, setPaymentType] = useState(new Set([]));
   const [payment_rate, setPaymentRate] = useState(0);
-  const cookie = useCookies();
+
+  const { token, user} = useContext(AuthContext);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (Array.from(payment_type)[0] === 'SALARY' && payment_rate < 480) return setPaymentRate(480);
 
-  async function fetchData() {
-    const token = cookie.get('token');
-    const response = await axios.get(`/api/employee/${params.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    setName(response.data.name);
-    setEmail(response.data.email);
-    setPaymentType(new Set([response.data.payment_type as string]));
-    setEmployeId(response.data.id);
-    setPaymentRate(response.data.payment_rate);
-  }
+    if (Array.from(payment_type)[0] === 'HOURLY' && payment_rate < 12) return setPaymentRate(12);
+  }, [payment_type])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    const token = cookie.get('token');
-    const user_cookiee = cookie.get('user');
-
-    if (!user_cookiee) {
-      toast.error('User not found');
-      return (window.location.href = '/auth');
-    }
-
-    const user = JSON.parse(user_cookiee);
 
     const body = {
       name,
       email,
       payment_type: Array.from(payment_type)[0],
       payment_rate,
+      enterprise_id: user.enterprise_id,
     };
 
     try {
-      const response = await axios.patch(`/api/employee/${employe_id}`, body, {
+      const response = await axios.post('/api/employee', body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success('Employee updated');
-      window.location.href = '/employee';
+      toast.success('Employee added');
+      window.location.href = '/dashboard/employee';
     } catch (error) {
-      toast.error('Error updating employee');
+      toast.error('Error adding employee');
       console.error(error);
     }
   };
@@ -110,13 +88,13 @@ export default function EditEmployePage({ params }: any) {
 
         <Input
           type="number"
-          label="Payment Rate (USD)"
-          placeholder="Payment Rate (USD)"
+          placeholder="Payment Rate"
+          label="Payment Rate"
           name="payment_rate"
           value={payment_rate.toString()}
-          onChange={(e) => setPaymentRate(+e.target.value)}
+          onChange={(e) => setPaymentRate(Number(e.target.value))}
           required
-          min={Array.from(payment_type)[0] === 'HOURLY' ? 12 : 480}
+          min={Array.from(payment_type)[0] === 'SALARY' ? 480 : 12}
         />
 
         <div className="flex justify-center">
@@ -126,7 +104,7 @@ export default function EditEmployePage({ params }: any) {
             size="md"
             className="text-white"
           >
-            Update Employee
+            Add Employee
           </Button>
         </div>
       </form>

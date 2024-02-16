@@ -1,54 +1,35 @@
 'use client';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
 import axios from 'axios';
 import { useCookies } from 'next-client-cookies';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useContext, useState } from 'react';
 import toast from 'react-hot-toast';
 
 const paymentTypes = ['HOURLY', 'SALARY'];
 
-export default function EditEnterprisePage({ params }: any) {
+export default function AddEmployeePage() {
   const [name, setName] = useState('');
-  const cookie = useCookies();
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    const token = cookie.get('token');
-
-    const id = params.id;
-
-    const response = await axios.get(`/api/enterprise/${params.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    setName(response.data.name);
-  }
+  const { token} = useContext(AuthContext);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    const token = cookie.get('token');
 
     const body = {
       name,
     };
 
     try {
-      const response = await axios.patch(`/api/enterprise/${params.id}`, body, {
+      const response = await axios.post('/api/enterprise', body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success('Enterprise Updated');
-      window.location.href = '/enterprise';
+      toast.success('Enterprise added');
+      window.location.href = '/dashboard/enterprise';
     } catch (error) {
-      toast.error('Error Updateing Enterprise');
+      toast.error('Error adding Enterprise');
       console.error(error);
     }
   };
@@ -77,7 +58,7 @@ export default function EditEnterprisePage({ params }: any) {
             size="md"
             className="text-white"
           >
-            Update Enterprise
+            Add Enterprise
           </Button>
         </div>
       </form>

@@ -10,33 +10,29 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import toast from 'react-hot-toast';
+import { AuthContext } from '../../contexts/authContext';
 
-export default function PaymentSheetsPage({params}: any) {
+export default function PaymentSheetsPage({ params }: any) {
   const [timeSheets, setTimeSheets] = useState<any[]>([]);
-  const cookies = useCookies();
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
     fetchData();
   }, []);
   async function fetchData() {
-    const token = cookies.get('token');
-
     const response = await axios.get('/api/payments-sheet', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-
     setTimeSheets(response.data);
   }
 
   async function handleDelete(id: number) {
-    const token = cookies.get('token');
-
     try {
       const response = await axios.delete(`/api/payments-sheet/${id}`, {
         headers: {
@@ -69,11 +65,10 @@ export default function PaymentSheetsPage({params}: any) {
                 {new Date(timeSheet.created_at).toLocaleString()}
               </TableCell>
               <TableCell className="flex gap-4">
-                <a href={`/payments-sheet/${timeSheet.id}`}>
-                  <Button
-                    className='bg-blue-500 text-white'
-                    size='sm'
-                  >View</Button>
+                <a href={`/dashboard/payments-sheet/${timeSheet.id}`}>
+                  <Button className="bg-blue-500 text-white" size="sm">
+                    View
+                  </Button>
                 </a>
                 <Button
                   color="danger"

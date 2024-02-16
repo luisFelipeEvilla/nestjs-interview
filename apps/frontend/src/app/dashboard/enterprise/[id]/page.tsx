@@ -1,36 +1,57 @@
 'use client';
 import { Button, Input, Select, SelectItem } from '@nextui-org/react';
+import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
 import axios from 'axios';
 import { useCookies } from 'next-client-cookies';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
 const paymentTypes = ['HOURLY', 'SALARY'];
 
-export default function AddEmployeePage() {
+export default function EditEnterprisePage({ params }: any) {
   const [name, setName] = useState('');
-  const cookie = useCookies();
+  const {token} = useContext(AuthContext);
+  
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function fetchData() {
+    const id = params.id;
+
+    try {
+      const response = await axios.get(`/api/enterprise/${params.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      setName(response.data.name);
+    } catch (error) {
+      toast.error('Error fetching Enterprise');
+      console.error(error); 
+    }
+  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    const token = cookie.get('token');
 
     const body = {
       name,
     };
 
     try {
-      const response = await axios.post('/api/enterprise', body, {
+      const response = await axios.patch(`/api/enterprise/${params.id}`, body, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success('Enterprise added');
-      window.location.href = '/enterprise';
+      toast.success('Enterprise Updated');
+      window.location.href = '/dashboard/enterprise';
     } catch (error) {
-      toast.error('Error adding Enterprise');
+      toast.error('Error Updateing Enterprise');
       console.error(error);
     }
   };
@@ -59,7 +80,7 @@ export default function AddEmployeePage() {
             size="md"
             className="text-white"
           >
-            Add Enterprise
+            Update Enterprise
           </Button>
         </div>
       </form>

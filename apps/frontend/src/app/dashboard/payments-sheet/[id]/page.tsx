@@ -1,6 +1,6 @@
 'use client';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import {
   Button,
@@ -13,6 +13,7 @@ import {
   TableRow,
 } from '@nextui-org/react';
 import toast from 'react-hot-toast';
+import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
 
 type PaymentSheet = {
   id: number;
@@ -40,14 +41,14 @@ export default function PaymentSheetDetail({ params }: any) {
     check_date: new Date(),
     enterprise_id: 0,
   });
-  const cookies = useCookies();
+  const { token } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-  async function fetchData() {
-    const token = cookies.get('token');
+    if (!token) return;
 
+    fetchData();
+  }, [token]);
+  async function fetchData() {
     try {
       const response = await axios.get(`/api/payments-sheet/${params.id}`, {
         headers: {
@@ -88,8 +89,6 @@ export default function PaymentSheetDetail({ params }: any) {
   };
 
   const handleSubtmit = async () => {
-    const token = cookies.get('token');
-
     try {
       await axios.patch(`/api/payments-sheet/${params.id}`, paymentSheet, {
         headers: {
@@ -132,44 +131,31 @@ export default function PaymentSheetDetail({ params }: any) {
         </TableHeader>
 
         <TableBody>
-            {paymentSheet.employee_payment.map((employee_payment) => (
-              <TableRow key={employee_payment.id}>
-                <TableCell>{employee_payment.employee.name}</TableCell>
-                <TableCell>{employee_payment.payment_type}</TableCell>
-                <TableCell>{employee_payment.payment_rate} USD</TableCell>
-                <TableCell>
-                  {employee_payment.payment_type === 'HOURLY' ? (
-                    <Input
-                      size="sm"
-                      type="number"
-                      defaultValue={'0'}
-                      value={employee_payment.units.toString()}
-                      onChange={(e) => handleUnitChange(e, employee_payment.id)}
-                      min={0}
-                    />
-                  ) : (
-                    1
-                  )}
-                </TableCell>
-                <TableCell>
-                  {employee_payment.payment_rate * employee_payment.units} USD
-                </TableCell>
-              </TableRow>
-            ))}
-
-            {/* <TableRow>
-              <TableCell colSpan={3} ><p></p></TableCell>
-              <TableCell>Total</TableCell>
+          {paymentSheet.employee_payment.map((employee_payment) => (
+            <TableRow key={employee_payment.id}>
+              <TableCell>{employee_payment.employee.name}</TableCell>
+              <TableCell>{employee_payment.payment_type}</TableCell>
+              <TableCell>{employee_payment.payment_rate} USD</TableCell>
               <TableCell>
-                {paymentSheet.employee_payment.reduce(
-                  (acc, employee_payment) =>
-                    acc +
-                    employee_payment.payment_rate * employee_payment.units,
-                  0,
+                {employee_payment.payment_type === 'HOURLY' ? (
+                  <Input
+                    size="sm"
+                    type="number"
+                    defaultValue={'0'}
+                    value={employee_payment.units.toString()}
+                    onChange={(e) => handleUnitChange(e, employee_payment.id)}
+                    min={0}
+                  />
+                ) : (
+                  1
                 )}
-                USD
               </TableCell>
-            </TableRow> */}
+              <TableCell>
+                {employee_payment.payment_rate * employee_payment.units} USD
+              </TableCell>
+            </TableRow>
+          ))}
+
         </TableBody>
       </Table>
 

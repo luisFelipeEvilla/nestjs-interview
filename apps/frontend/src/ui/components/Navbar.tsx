@@ -21,15 +21,15 @@ export default function AdminNavbar() {
       <NavbarBrand>PayPeo</NavbarBrand>
       <NavbarContent>
         <NavbarItem>
-          <Link href="/enterprise">Enterprise</Link>
+          <Link href="/dashboard/enterprise">Enterprise</Link>
         </NavbarItem>
 
         <NavbarItem>
-          <Link href="/employee">Employee</Link>
+          <Link href="/dashboard/employee">Employee</Link>
         </NavbarItem>
 
         <NavbarItem>
-          <Link href="/payments-sheet">Payments Sheet</Link>
+          <Link href="/dashboard/payments-sheet">Payments Sheet</Link>
         </NavbarItem>
 
         <Dropdown>
