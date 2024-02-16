@@ -78,12 +78,14 @@ export default function Singin() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          data-testid="email"
           errorMessage={error ? 'Invalid email or password' : null}
         />
 
         <Input
           type="password"
           placeholder="Password"
+          data-testid="password"
           name="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
