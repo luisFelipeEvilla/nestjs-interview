@@ -9,11 +9,11 @@ export class EmployeeService {
   
   async create(createEmployeeDto: CreateEmployeeDto) {
     if (createEmployeeDto.payment_type === 'SALARY' && createEmployeeDto.payment_rate < 480) {
-      throw new BadRequestException('Minimum payment rate for salary is 480');
+      return new BadRequestException('Minimum payment rate for salary is 480');
     }
 
     if (createEmployeeDto.payment_type === 'HOURLY' && createEmployeeDto.payment_rate < 12) {
-      throw new BadRequestException('Minimum payment rate for hourly is 12');
+      return new BadRequestException('Minimum payment rate for hourly is 12');
     }
 
     const employee = await this.prisma.employee.create({
