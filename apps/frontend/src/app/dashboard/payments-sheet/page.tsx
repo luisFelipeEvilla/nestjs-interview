@@ -134,7 +134,7 @@ export default function PaymentSheetsPage({ params }: any) {
 
     if (state === 'PENDING') return  ( <Badge color='warning'>Pending</Badge> )
       
-    if (state === 'SUBMIT') return ( <Badge color='secondary'>Submit</Badge>)
+    if (state === 'SUBMIT') return ( <Badge color='blue'>Submit</Badge>)
     
     if (state === 'APPROVED') return ( <Badge color='success'>Approved</Badge> )
 

@@ -53,8 +53,6 @@ export class PaymentsSheetService {
         },
       });
 
-      console.log(paymentsSheet);
-
       return paymentsSheet;
     } catch (error) {
       console.error(error);
@@ -95,12 +93,14 @@ export class PaymentsSheetService {
 
     if (!payment_sheet) return null;
 
+    if (user_role === role.USER && payment_sheet.state === 'PENDING' ) updatePaymentsSheetDto.state = 'SUBMIT';
     const paymentSheet = await this.prisma.payments_sheet.update({
       where: {
         id,
       },
       data: {
         check_date: updatePaymentsSheetDto.check_date,
+        state: updatePaymentsSheetDto.state,
       },
     });
 

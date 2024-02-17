@@ -5,6 +5,8 @@ import { useCookies } from 'next-client-cookies';
 import {
   Button,
   Input,
+  Select,
+  SelectItem,
   Table,
   TableBody,
   TableCell,
@@ -23,6 +25,7 @@ type PaymentSheet = {
   check_date: Date;
   employee_payment: employee_payment[];
   enterprise_id: number;
+  state: string;
 };
 
 type employee_payment = {
@@ -42,8 +45,18 @@ export default function PaymentSheetDetail({ params }: any) {
     employee_payment: [],
     check_date: new Date(),
     enterprise_id: 0,
+    state: '',
   });
-  const { token } = useContext(AuthContext);
+
+  const { token, user } = useContext(AuthContext);
+
+  const [sheetStates, setSheetStates] = useState<string[]>([
+    'PENDING',
+    'SUBMIT',
+    'APPROVED',
+    'REJECTED',
+  ]);
+  const [sheetStateSelected, setSheetStateSelected] = useState<string>();
 
   useEffect(() => {
     if (!token) return;
@@ -85,7 +98,6 @@ export default function PaymentSheetDetail({ params }: any) {
     setPaymentSheet({
       ...paymentSheet,
       // @ts-ignore
-      check_date: paymentSheet.check_date,
       employee_payment: newEmployeesPayment,
     });
   };
@@ -126,7 +138,7 @@ export default function PaymentSheetDetail({ params }: any) {
           </p>
         </Card>
 
-        <div className="flex flex-row-reverse items-center">
+        <div className="flex flex-row-reverse items-center gap-4">
           <Input
             size="sm"
             className="max-w-[200px]"
@@ -142,6 +154,22 @@ export default function PaymentSheetDetail({ params }: any) {
             }
             required
           />
+
+          <Select
+            label="State"
+            className='w-[200px]'
+            selectedKeys={[paymentSheet.state]}
+            onChange={(e) => 
+              setPaymentSheet({ ...paymentSheet, state: e.target.value})
+            }
+            isDisabled={user.role === 'USER'}
+          >
+            {sheetStates.map((state) => (
+              <SelectItem key={state} value={state}>
+                {state}
+              </SelectItem>
+            ))}
+          </Select>
         </div>
       </div>
 

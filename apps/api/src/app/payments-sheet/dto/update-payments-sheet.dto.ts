@@ -8,7 +8,6 @@ export class UpdatePaymentsSheetDto extends PartialType(
   CreatePaymentsSheetDto,
 ) {
   @ApiProperty()
-  @IsDate()
   check_date: string;
 
   @ApiProperty()
