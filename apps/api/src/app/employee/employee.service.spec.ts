@@ -6,8 +6,9 @@ import {
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmployeeService } from './employee.service';
 import { PrismaService } from '../prisma.service';
-import { payment_type } from '@prisma/client';
+import { payment_type, role } from '@prisma/client';
 import { BadRequestException } from '@nestjs/common';
+import { mockUser } from '@ocmi/api/mock/users';
 
 describe('EmployeeService', () => {
   let service: EmployeeService;
@@ -103,7 +104,7 @@ describe('EmployeeService', () => {
   })
 
   it('should find all employees', async () => {
-    const result = await service.findAll();
+    const result = await service.findAll(role.ADMIN, 1);
 
     expect(result).toEqual(mockEmployees);
 

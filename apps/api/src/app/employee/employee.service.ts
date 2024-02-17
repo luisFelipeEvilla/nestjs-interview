@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { PrismaService } from '../prisma.service';
+import { role } from '@prisma/client';
 
 @Injectable()
 export class EmployeeService {
@@ -33,8 +34,12 @@ export class EmployeeService {
     return employee;
   }
 
-  async findAll() {
-    const employees = await this.prisma.employee.findMany();
+  async findAll(user_role: role, enterprise_id: number) {
+    const employees = await this.prisma.employee.findMany({
+      where: {
+        enterprise_Id: user_role === role.USER ? enterprise_id : null
+      }
+    });
 
     return employees;
   }

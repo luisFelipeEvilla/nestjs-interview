@@ -6,6 +6,7 @@ import { mockEmployee, mockEmployees } from '@ocmi/api/mock/employee';
 import { payment_type } from '@prisma/client';
 import { ParseIntPipe } from '@nestjs/common';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
+import { mockUser } from '@ocmi/api/mock/users';
 
 describe('EmployeeController', () => {
   let controller: EmployeeController;
@@ -54,7 +55,7 @@ describe('EmployeeController', () => {
   });
 
   it('should find all employees', async () => {
-    const result = await controller.findAll();
+    const result = await controller.findAll({ user: mockUser });
 
     expect(result).toEqual(mockEmployees);
   });

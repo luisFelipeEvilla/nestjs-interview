@@ -1,3 +1,4 @@
+import { role } from '@prisma/client';
 import {
   Controller,
   Get,
@@ -9,6 +10,7 @@ import {
   NotFoundException,
   ParseIntPipe,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -16,6 +18,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Employee } from './entities/employee.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from '../user/entities/user.entity';
 
 @Controller('employee')
 @ApiTags('employee')
@@ -34,8 +37,8 @@ export class EmployeeController {
   @ApiOkResponse({ type: Employee, isArray: true, description: 'List of all employees' })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  async findAll() {
-    return await this.employeeService.findAll();
+  async findAll(@Req() req: { user: User}) {
+    return await this.employeeService.findAll(req.user.role, req.user.enterprise_id);
   }
 
   @Get(':id')
