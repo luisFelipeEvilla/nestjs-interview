@@ -14,6 +14,8 @@ import {
 } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
+import { Card } from '@tremor/react';
+import { formatToUSD } from 'apps/frontend/utils/formatCurrency';
 
 type PaymentSheet = {
   id: number;
@@ -104,29 +106,51 @@ export default function PaymentSheetDetail({ params }: any) {
 
   return (
     <div className="flex flex-col gap-4 py-4">
-      <div className="flex flex-row-reverse ">
-        <Input
-          size="sm"
-          className="max-w-[200px]"
-          label="Check Date"
-          placeholder="Select a Check Date of the payroll"
-          type="date"
-          value={paymentSheet.check_date.toISOString().split('T')[0]}
-          onChange={(e) =>
-            setPaymentSheet({
-              ...paymentSheet,
-              check_date: new Date(e.target.value),
-            })
-          }
-          required
-        />
+      <div className="flex justify-between w-full">
+        <Card
+          title="Total Gross Wage"
+          className="max-w-xs w-fit"
+          decoration={'top'}
+          decorationColor="green"
+        >
+          <p>Total Gross Wage</p>
+          <p>
+            {' '}
+            {formatToUSD(
+              paymentSheet.employee_payment.reduce(
+                (acc, employee_payment) =>
+                  acc + employee_payment.payment_rate * employee_payment.units,
+                0,
+              ),
+            )}
+          </p>
+        </Card>
+
+        <div className="flex flex-row-reverse items-center">
+          <Input
+            size="sm"
+            className="max-w-[200px]"
+            label="Check Date"
+            placeholder="Select a Check Date of the payroll"
+            type="date"
+            value={paymentSheet.check_date.toISOString().split('T')[0]}
+            onChange={(e) =>
+              setPaymentSheet({
+                ...paymentSheet,
+                check_date: new Date(e.target.value),
+              })
+            }
+            required
+          />
+        </div>
       </div>
+
       <Table>
         <TableHeader>
           <TableColumn>Employee Name</TableColumn>
           <TableColumn>Payment Type</TableColumn>
           <TableColumn>Payment Rate</TableColumn>
-          <TableColumn>Unit</TableColumn>
+          <TableColumn>Hours</TableColumn>
           <TableColumn>Payment Amount</TableColumn>
         </TableHeader>
 
@@ -147,11 +171,13 @@ export default function PaymentSheetDetail({ params }: any) {
                     min={0}
                   />
                 ) : (
-                  1
+                  'N/A'
                 )}
               </TableCell>
               <TableCell>
-                {employee_payment.payment_rate * employee_payment.units} USD
+                {formatToUSD(
+                  employee_payment.payment_rate * employee_payment.units,
+                )}
               </TableCell>
             </TableRow>
           ))}
