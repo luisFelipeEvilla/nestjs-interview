@@ -11,7 +11,6 @@ import {
 } from '@nextui-org/react';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { useCookies } from 'next-client-cookies';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../contexts/authContext';
 
@@ -52,7 +51,8 @@ export default function PaymentSheetsPage({ params }: any) {
   async function handleCreate() {
     try {
       const response = await axios.post(
-        '/api/payments-sheet', {
+        '/api/payments-sheet',
+        {
           enterprise_id: user.enterprise_id,
         },
         {
@@ -62,7 +62,6 @@ export default function PaymentSheetsPage({ params }: any) {
         },
       );
 
-        console.log(response.data);
       setTimeSheets([...timeSheets, response.data]);
 
       toast.success('Time sheet created successfully');
@@ -84,6 +83,7 @@ export default function PaymentSheetsPage({ params }: any) {
         <TableHeader>
           <TableColumn>ID</TableColumn>
           <TableColumn>Enterprise</TableColumn>
+          <TableColumn>Check Date</TableColumn>
           <TableColumn>Created At</TableColumn>
           <TableColumn>Actions</TableColumn>
         </TableHeader>
@@ -93,6 +93,11 @@ export default function PaymentSheetsPage({ params }: any) {
             <TableRow key={timeSheet.id}>
               <TableCell>{timeSheet.id}</TableCell>
               <TableCell>{timeSheet.enterprise.name}</TableCell>
+              <TableCell>
+                {timeSheet.check_date
+                  ? new Date(timeSheet.check_date).toLocaleString()
+                  : 'Not checked'}
+              </TableCell>
               <TableCell>
                 {new Date(timeSheet.created_at).toLocaleString()}
               </TableCell>
