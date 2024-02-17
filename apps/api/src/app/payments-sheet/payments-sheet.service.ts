@@ -51,6 +51,9 @@ export class PaymentsSheetService {
         include: {
           enterprise: true,
         },
+        orderBy: {
+          created_at: 'desc',
+        }
       });
 
       return paymentsSheet;

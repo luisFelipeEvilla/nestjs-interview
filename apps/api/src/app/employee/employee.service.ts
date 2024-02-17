@@ -37,7 +37,7 @@ export class EmployeeService {
   async findAll(user_role: role, enterprise_id: number) {
     const employees = await this.prisma.employee.findMany({
       where: {
-        enterprise_Id: user_role === role.USER ? enterprise_id : null
+        enterprise_Id: user_role === role.USER ? enterprise_id : undefined
       }
     });
 
