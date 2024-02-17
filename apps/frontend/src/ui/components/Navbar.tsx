@@ -40,7 +40,7 @@ export default function AdminNavbar() {
 
   return (
     <Navbar isBordered>
-      <NavbarBrand>PayPeo</NavbarBrand>
+      <NavbarBrand>PEOPayGo</NavbarBrand>
       <NavbarContent>
         {links.map((link) => (
           <Link key={link.name} href={link.href}>
