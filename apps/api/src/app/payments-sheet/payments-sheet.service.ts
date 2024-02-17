@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreatePaymentsSheetDto } from './dto/create-payments-sheet.dto';
 import { UpdatePaymentsSheetDto } from './dto/update-payments-sheet.dto';
 import { PrismaService } from '../prisma.service';
@@ -14,11 +14,14 @@ export class PaymentsSheetService {
       data: {
         enterprise_id,
       },
+      include: {
+        enterprise: true,
+      },
     });
 
     const employees = await this.prisma.employee.findMany({
       where: {
-        enterprise_Id:  enterprise_id,
+        enterprise_Id: enterprise_id,
       },
     });
 
@@ -29,7 +32,7 @@ export class PaymentsSheetService {
           payment_type: employee.payment_type,
           payment_rate: employee.payment_rate,
           timesheet_id: paymentSheet.id,
-          units: employee.payment_type === payment_type.SALARY ? 1 : 0 ,
+          units: employee.payment_type === payment_type.SALARY ? 1 : 0,
         },
       });
     }
@@ -38,20 +41,28 @@ export class PaymentsSheetService {
   }
 
   async findAll(user_role: role, enterpriseId: number) {
-    const paymentsSheet = await this.prisma.payments_sheet.findMany({
-      where: {
-        enterprise_id: user_role === role.USER ? enterpriseId : undefined,
-      },
-      include: {
-        enterprise: true
-      }
-    });
-    
-    return paymentsSheet;
+    console.log(enterpriseId);
+    console.log(user_role);
+    try {
+      const paymentsSheet = await this.prisma.payments_sheet.findMany({
+        where: {
+          enterprise_id: user_role === role.USER ? +enterpriseId : undefined,
+        },
+        include: {
+          enterprise: true,
+        },
+      });
+
+      console.log(paymentsSheet);
+
+      return paymentsSheet;
+    } catch (error) {
+      console.error(error);
+      return new InternalServerErrorException(`Error: ${error}`)
+    }
   }
 
   async findOne(id: number, user_role: role, enterpriseId: number) {
-
     const paymentSheet = await this.prisma.payments_sheet.findUnique({
       where: {
         id,
@@ -62,14 +73,19 @@ export class PaymentsSheetService {
           include: {
             employee: true,
           },
-        }
-      }
+        },
+      },
     });
 
     return paymentSheet;
   }
 
-  async update(id: number, updatePaymentsSheetDto: UpdatePaymentsSheetDto, user_role: role, enterpriseId: number) {
+  async update(
+    id: number,
+    updatePaymentsSheetDto: UpdatePaymentsSheetDto,
+    user_role: role,
+    enterpriseId: number,
+  ) {
     const payment_sheet = await this.prisma.payments_sheet.findUnique({
       where: {
         id,

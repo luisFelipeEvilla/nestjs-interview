@@ -25,7 +25,8 @@ export class PaymentsSheetController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  create(@Body() createPaymentsSheetDto: CreatePaymentsSheetDto) {
+  create(
+    @Body() createPaymentsSheetDto: CreatePaymentsSheetDto) {
     return this.paymentsSheetService.create(createPaymentsSheetDto);
   }
 

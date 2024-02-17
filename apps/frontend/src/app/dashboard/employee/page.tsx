@@ -31,9 +31,6 @@ export default function Index() {
           Authorization: `Bearer ${token}`,
         },
       });
-      
-      console.log(axios.get);
-      console.log(response);
       setEmployees(response.data);
     } catch (error) {
       console.error(error);

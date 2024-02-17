@@ -17,7 +17,7 @@ import { AuthContext } from '../../contexts/authContext';
 
 export default function PaymentSheetsPage({ params }: any) {
   const [timeSheets, setTimeSheets] = useState<any[]>([]);
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
 
   useEffect(() => {
     if (!token) return;
@@ -49,8 +49,37 @@ export default function PaymentSheetsPage({ params }: any) {
     }
   }
 
+  async function handleCreate() {
+    try {
+      const response = await axios.post(
+        '/api/payments-sheet', {
+          enterprise_id: user.enterprise_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+        console.log(response.data);
+      setTimeSheets([...timeSheets, response.data]);
+
+      toast.success('Time sheet created successfully');
+    } catch (error) {
+      toast.error('Failed to create time sheet');
+      console.error(error);
+    }
+  }
+
   return (
-    <div>
+    <div className="text-2xl flex flex-col gap-4 py-4 px-4">
+      <div className="flex flex-row-reverse">
+        <Button onPress={handleCreate} color="success" className="text-white">
+          create
+        </Button>
+      </div>
+
       <Table>
         <TableHeader>
           <TableColumn>ID</TableColumn>
