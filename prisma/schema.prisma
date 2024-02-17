@@ -61,6 +61,13 @@ model employee_payment {
   payments_sheet payments_sheet @relation(fields: [timesheet_id], references: [id], onDelete: Cascade)
 }
 
+enum payments_sheet_states {
+  PENDING
+  SUBMIT
+  APPROVED
+  REJECTED
+}
+
 model payments_sheet {
   id               Int                @id @default(autoincrement())
   enterprise_id    Int                @map("enterpriseId")
@@ -69,4 +76,5 @@ model payments_sheet {
   enterprise       enterprise         @relation(fields: [enterprise_id], references: [id])
   check_date       DateTime?          @db.Timestamptz(3)
   employee_payment employee_payment[]
+  state            payments_sheet_states @default(PENDING)
 }

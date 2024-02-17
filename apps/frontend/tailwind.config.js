@@ -142,6 +142,6 @@ module.exports = {
   plugins: [
     TailwindAnimate,
     nextui(),
-    require('@headlessui/tailwindcss'),
+    require('@headlessui/tailwindcss')
   ],
 };

@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../contexts/authContext';
+import { Badge } from '@tremor/react';
 
 export default function PaymentSheetsPage({ params }: any) {
   const [timeSheets, setTimeSheets] = useState<any[]>([]);
@@ -84,6 +85,7 @@ export default function PaymentSheetsPage({ params }: any) {
           <TableColumn>ID</TableColumn>
           <TableColumn>Enterprise</TableColumn>
           <TableColumn>Check Date</TableColumn>
+          <TableColumn>State</TableColumn>
           <TableColumn>Created At</TableColumn>
           <TableColumn>Actions</TableColumn>
         </TableHeader>
@@ -93,11 +95,17 @@ export default function PaymentSheetsPage({ params }: any) {
             <TableRow key={timeSheet.id}>
               <TableCell>{timeSheet.id}</TableCell>
               <TableCell>{timeSheet.enterprise.name}</TableCell>
+
               <TableCell>
                 {timeSheet.check_date
                   ? new Date(timeSheet.check_date).toLocaleString()
                   : 'Not checked'}
               </TableCell>
+              <TableCell>
+                { 
+                  PaymentSheetBadge(timeSheet.state)
+                }
+                </TableCell>
               <TableCell>
                 {new Date(timeSheet.created_at).toLocaleString()}
               </TableCell>
@@ -121,4 +129,15 @@ export default function PaymentSheetsPage({ params }: any) {
       </Table>
     </div>
   );
+
+  function PaymentSheetBadge(state: string) {
+
+    if (state === 'PENDING') return  ( <Badge color='warning'>Pending</Badge> )
+      
+    if (state === 'SUBMIT') return ( <Badge color='secondary'>Submit</Badge>)
+    
+    if (state === 'APPROVED') return ( <Badge color='success'>Approved</Badge> )
+
+    if (state === 'REJECTED') return ( <Badge color='danger'>Rejected</Badge> )  
+  }
 }

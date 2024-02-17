@@ -1,5 +1,5 @@
 import { CreatePaymentsSheetDto } from './../app/payments-sheet/dto/create-payments-sheet.dto';
-import { employee_payment, payments_sheet } from '@prisma/client';
+import { employee_payment, payments_sheet, payments_sheet_states } from '@prisma/client';
 
 export const mockCreatePaymentSheetDto: CreatePaymentsSheetDto = {
   enterprise_id: 1,
@@ -26,6 +26,7 @@ export const mockPaymentSheet: payments_sheet = {
   check_date: new Date(),
   created_at: new Date(),
   updated_at: new Date(),
+  state: payments_sheet_states.PENDING
 };
 
 export const mockPaymentSheets: payments_sheet[] = [
