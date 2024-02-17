@@ -79,7 +79,11 @@ export default function PaymentSheetDetail({ params }: any) {
         },
       });
 
-      response.data.check_date = new Date(response.data.check_date);
+      if (response.data.check_date) {
+        response.data.check_date = new Date(response.data.check_date);
+      } else {
+        response.data.check_date = new Date();
+      }
 
       setPaymentSheet(response.data);
     } catch (error) {
@@ -118,6 +122,7 @@ export default function PaymentSheetDetail({ params }: any) {
         },
       });
       toast.success('Payment sheet updated successfully');
+      window.location.reload();
     } catch (error) {
       toast.error('Failed to update payment sheet');
       console.error(error);
@@ -162,6 +167,7 @@ export default function PaymentSheetDetail({ params }: any) {
               })
             }
             required
+            isDisabled={user?.role === 'USER' && paymentSheet.state !== 'PENDING'}
           />
 
           <Select
@@ -206,6 +212,9 @@ export default function PaymentSheetDetail({ params }: any) {
                     value={employee_payment.units.toString()}
                     onChange={(e) => handleUnitChange(e, employee_payment.id)}
                     min={0}
+                    isDisabled={
+                      user?.role === 'USER' && paymentSheet.state !== 'PENDING'
+                    }
                   />
                 ) : (
                   'N/A'
@@ -222,7 +231,12 @@ export default function PaymentSheetDetail({ params }: any) {
       </Table>
 
       <div className="flex flex-row-reverse ">
-        <Button onClick={onOpen} color="success" className="text-white">
+        <Button
+          isDisabled={user?.role === 'USER' && paymentSheet.state !== 'PENDING'}
+          onClick={onOpen}
+          color="success"
+          className="text-white"
+        >
           Save
         </Button>
       </div>
