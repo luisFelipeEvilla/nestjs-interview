@@ -8,7 +8,7 @@ import { PrismaService } from '../prisma.service';
 import { JwtStrategy } from './jwt.strategy';
 import { UserModule } from '../user/user.module';
 
-// todo: extract this from enviroment variables
+// todo: extract this from enviroment variables or a config file
 export const jwtSecret = 'zjP9h6ZI5LoSKCRj';
 
 @Module({
