@@ -5,6 +5,11 @@ import { useCookies } from 'next-client-cookies';
 import {
   Button,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Select,
   SelectItem,
   Table,
@@ -13,6 +18,7 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  useDisclosure,
 } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 import { AuthContext } from '@ocmi/frontend/app/contexts/authContext';
@@ -47,6 +53,8 @@ export default function PaymentSheetDetail({ params }: any) {
     enterprise_id: 0,
     state: '',
   });
+
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
 
   const { token, user } = useContext(AuthContext);
 
@@ -118,6 +126,7 @@ export default function PaymentSheetDetail({ params }: any) {
 
   return (
     <div className="flex flex-col gap-4 py-4">
+      <ConfirmationModal />
       <div className="flex justify-between w-full">
         <Card
           title="Total Gross Wage"
@@ -157,12 +166,12 @@ export default function PaymentSheetDetail({ params }: any) {
 
           <Select
             label="State"
-            className='w-[200px]'
+            className="w-[200px]"
             selectedKeys={[paymentSheet.state]}
-            onChange={(e) => 
-              setPaymentSheet({ ...paymentSheet, state: e.target.value})
+            onChange={(e) =>
+              setPaymentSheet({ ...paymentSheet, state: e.target.value })
             }
-            isDisabled={user.role === 'USER'}
+            isDisabled={user?.role === 'USER'}
           >
             {sheetStates.map((state) => (
               <SelectItem key={state} value={state}>
@@ -213,10 +222,45 @@ export default function PaymentSheetDetail({ params }: any) {
       </Table>
 
       <div className="flex flex-row-reverse ">
-        <Button onClick={handleSubtmit} color="success" className="text-white">
+        <Button onClick={onOpen} color="success" className="text-white">
           Save
         </Button>
       </div>
     </div>
   );
+
+  function ConfirmationModal() {
+    return (
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} onClose={onClose}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader>Are you sure?</ModalHeader>
+
+              <ModalBody>
+                Are you sure you want to submit this sheet? Once submitted, only
+                an administrator can modify it.
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  color="success"
+                  className="text-white"
+                  onPress={(e) => {
+                    onClose();
+                    handleSubtmit();
+                  }}
+                >
+                  Yes
+                </Button>
+                <Button color="danger" onPress={onClose}>
+                  No
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    );
+  }
 }

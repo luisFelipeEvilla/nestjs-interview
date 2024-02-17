@@ -1,13 +1,12 @@
 'use client';
 
 import {
-  Button,
-  Table,
+  Button, Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
-  TableRow,
+  TableRow
 } from '@nextui-org/react';
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
