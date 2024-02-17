@@ -118,6 +118,7 @@ export default function PaymentSheetsPage({ params }: any) {
                   color="danger"
                   size="sm"
                   onClick={() => handleDelete(timeSheet.id)}
+                  isDisabled={timeSheet.state !== 'PENDING' && user?.role !== 'ADMIN'}
                 >
                   Delete
                 </Button>
